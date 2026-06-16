@@ -1,0 +1,2 @@
+# Keep shell scripts LF so Git Bash can run the hook script on Windows.
+*.sh text eol=lf
