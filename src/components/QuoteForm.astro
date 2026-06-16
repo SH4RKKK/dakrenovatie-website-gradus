@@ -53,7 +53,8 @@ import Icon from "./Icon.astro";
               name="email"
               type="email"
               required
-              class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+              aria-describedby="form-error"
+              class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
             />
           </div>
           <div>
@@ -80,7 +81,7 @@ import Icon from "./Icon.astro";
           </div>
           <div class="sm:col-span-2">
             <button type="submit" class="btn-primary w-full sm:w-auto">Verstuur aanvraag</button>
-            <p id="form-error" class="mt-3 hidden text-sm text-accent"></p>
+            <p id="form-error" role="alert" class="mt-3 hidden text-sm text-red-600"></p>
           </div>
         </form>
       </div>
@@ -98,16 +99,19 @@ import Icon from "./Icon.astro";
     e.preventDefault();
     const data = new FormData(form);
     const emailVal = String(data.get("email") ?? "").trim();
+    const emailEl = document.getElementById("email");
 
     if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
       if (errEl) {
         errEl.textContent = "Vul een geldig e-mailadres in.";
         errEl.classList.remove("hidden");
       }
-      document.getElementById("email")?.focus();
+      emailEl?.setAttribute("aria-invalid", "true");
+      emailEl?.focus();
       return;
     }
     errEl?.classList.add("hidden");
+    emailEl?.removeAttribute("aria-invalid");
 
     const lines = [
       `Naam: ${data.get("voornaam") ?? ""} ${data.get("achternaam") ?? ""}`.trim(),
