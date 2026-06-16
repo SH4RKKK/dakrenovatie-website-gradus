@@ -1,0 +1,41 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<section id="over-ons" class="py-20">
+  <div class="container-x grid items-center gap-12 lg:grid-cols-2">
+    <div>
+      <p class="eyebrow">Over Ons</p>
+      <h2 class="mt-4 text-3xl sm:text-4xl">
+        Uw specialist in dakpannen en dakbedekking
+      </h2>
+      <p class="mt-6 leading-relaxed">
+        Welkom bij Dakrenovatie Midden-Nederland, uw specialist in hoogwaardige
+        dakpannen en professionele dakbedekking. Met een toegewijd team van vakmensen
+        streven we ernaar om woningen en gebouwen te voorzien van duurzame en
+        esthetisch aantrekkelijke dakoplossingen die de tand des tijds doorstaan.
+      </p>
+      <p class="mt-4 leading-relaxed">
+        Onze expertise en passie komen samen om aan diverse projectbehoeften te
+        voldoen, of het nu gaat om renovaties, nieuwbouw of reparatiewerkzaamheden. We
+        bieden een breed scala aan dakpannen van gerenommeerde fabrikanten, zodat u kunt
+        kiezen uit verschillende stijlen en kleuren die bij uw project passen.
+      </p>
+      <a href="/contact" class="btn-primary mt-8">Offerte aanvragen</a>
+    </div>
+
+    <!-- Decorative panel — replace with a real project photo later. -->
+    <div
+      class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#2c3e4a] to-ink shadow-card"
+    >
+      <div
+        class="absolute inset-0 opacity-10"
+        style="background-image: repeating-linear-gradient(45deg, #fff 0 2px, transparent 2px 24px);"
+      >
+      </div>
+      <div class="absolute inset-0 flex items-center justify-center text-white/80">
+        <Icon name="layers" size={88} />
+      </div>
+    </div>
+  </div>
+</section>

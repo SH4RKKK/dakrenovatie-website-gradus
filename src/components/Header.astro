@@ -1,0 +1,187 @@
+---
+import { site, services } from "../data/site";
+import Icon from "./Icon.astro";
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path.startsWith(href);
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-black/5 bg-white/95 backdrop-blur"
+>
+  <div class="container-x flex h-20 items-center justify-between gap-4">
+    <!-- Logo -->
+    <a href="/" class="flex shrink-0 items-center" aria-label={site.name}>
+      <img src={site.logo} alt={site.name} class="h-12 w-auto md:h-14" />
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="hidden items-center gap-8 lg:flex" aria-label="Hoofdmenu">
+      <a
+        href="/"
+        class:list={[
+          "font-display text-sm font-bold uppercase tracking-wide transition hover:text-accent",
+          isActive("/") ? "text-accent" : "text-heading",
+        ]}>Home</a
+      >
+
+      <!-- Diensten dropdown -->
+      <div class="group relative">
+        <a
+          href="/diensten"
+          class:list={[
+            "flex items-center gap-1 font-display text-sm font-bold uppercase tracking-wide transition hover:text-accent",
+            path.startsWith("/diensten") ? "text-accent" : "text-heading",
+          ]}
+        >
+          Diensten
+          <Icon name="chevron" size={16} class="transition group-hover:rotate-180" />
+        </a>
+        <div
+          class="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 pt-3 opacity-0 transition group-hover:visible group-hover:opacity-100"
+        >
+          <ul class="overflow-hidden rounded-lg border border-black/5 bg-white py-2 shadow-card">
+            {
+              services.map((s) => (
+                <li>
+                  <a
+                    href={`/diensten/${s.slug}`}
+                    class="block px-5 py-2.5 text-sm text-heading transition hover:bg-accent hover:text-white"
+                  >
+                    {s.title}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <a
+        href="/contact"
+        class:list={[
+          "font-display text-sm font-bold uppercase tracking-wide transition hover:text-accent",
+          isActive("/contact") ? "text-accent" : "text-heading",
+        ]}>Contact</a
+      >
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="/contact" class="btn-primary hidden lg:inline-flex">Offerte aanvragen</a>
+
+      <!-- Mobile hamburger -->
+      <button
+        type="button"
+        id="menu-open"
+        class="flex h-11 w-11 items-center justify-center rounded-full bg-neutral-100 text-heading lg:hidden"
+        aria-label="Menu openen"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <Icon name="menu" size={24} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu (slide-in) -->
+<div id="mobile-menu" class="fixed inset-0 z-[60] hidden lg:hidden">
+  <div id="menu-overlay" class="absolute inset-0 bg-black/50"></div>
+  <div
+    class="absolute right-0 top-0 flex h-full w-[85%] max-w-sm flex-col bg-ink text-white shadow-xl"
+  >
+    <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+      <span class="font-display text-sm font-bold uppercase tracking-wider"
+        >{site.name}</span
+      >
+      <button
+        type="button"
+        id="menu-close"
+        class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10"
+        aria-label="Menu sluiten"
+      >
+        <Icon name="close" size={22} />
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto py-2" aria-label="Mobiel menu">
+      <a href="/" class="block px-6 py-3.5 font-display font-semibold hover:bg-white/5"
+        >Home</a
+      >
+      <button
+        type="button"
+        id="submenu-toggle"
+        class="flex w-full items-center justify-between px-6 py-3.5 font-display font-semibold hover:bg-white/5"
+        aria-expanded="false"
+      >
+        Diensten
+        <Icon name="chevron" size={18} id="submenu-chevron" />
+      </button>
+      <ul id="submenu" class="hidden bg-black/20">
+        {
+          services.map((s) => (
+            <li>
+              <a
+                href={`/diensten/${s.slug}`}
+                class="block py-2.5 pl-10 pr-6 text-sm text-white/80 hover:text-white"
+              >
+                {s.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a
+        href="/contact"
+        class="block px-6 py-3.5 font-display font-semibold hover:bg-white/5">Contact</a
+      >
+    </nav>
+
+    <div class="border-t border-white/10 p-6">
+      <a href="/contact" class="btn-primary w-full">Offerte aanvragen</a>
+      <a
+        href={`tel:${site.phone}`}
+        class="mt-3 flex items-center justify-center gap-2 text-sm text-white/80"
+      >
+        <Icon name="phone" size={16} /> Bel direct: {site.phoneDisplay}
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const menu = document.getElementById("mobile-menu");
+  const openBtn = document.getElementById("menu-open");
+  const closeBtn = document.getElementById("menu-close");
+  const overlay = document.getElementById("menu-overlay");
+  const subToggle = document.getElementById("submenu-toggle");
+  const submenu = document.getElementById("submenu");
+  const subChevron = document.getElementById("submenu-chevron");
+
+  const open = () => {
+    menu?.classList.remove("hidden");
+    openBtn?.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+  };
+  const close = () => {
+    menu?.classList.add("hidden");
+    openBtn?.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+  };
+
+  openBtn?.addEventListener("click", open);
+  closeBtn?.addEventListener("click", close);
+  overlay?.addEventListener("click", close);
+
+  subToggle?.addEventListener("click", () => {
+    const expanded = subToggle.getAttribute("aria-expanded") === "true";
+    subToggle.setAttribute("aria-expanded", String(!expanded));
+    submenu?.classList.toggle("hidden");
+    subChevron?.classList.toggle("rotate-180");
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+</script>

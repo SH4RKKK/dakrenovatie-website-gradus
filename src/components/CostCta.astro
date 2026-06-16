@@ -1,0 +1,29 @@
+---
+import { site } from "../data/site";
+import Icon from "./Icon.astro";
+---
+
+<section class="bg-accent py-16 text-white">
+  <div class="container-x grid items-center gap-8 lg:grid-cols-[1fr_auto]">
+    <div>
+      <h2 class="text-3xl text-white sm:text-4xl">Benieuwd naar de kosten?</h2>
+      <p class="mt-3 max-w-xl text-lg text-white/90">
+        Vraag vrijblijvend een offerte aan of bel ons direct — we denken graag met u mee.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-4">
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-2 bg-white px-8 py-4 font-display text-sm font-bold uppercase tracking-wide text-accent transition hover:bg-neutral-100"
+      >
+        Offerte aanvragen
+      </a>
+      <a
+        href={`tel:${site.phone}`}
+        class="inline-flex items-center justify-center gap-2 border-2 border-white px-8 py-4 font-display text-sm font-bold uppercase tracking-wide text-white transition hover:bg-white hover:text-accent"
+      >
+        <Icon name="phone" size={18} /> Bel direct
+      </a>
+    </div>
+  </div>
+</section>

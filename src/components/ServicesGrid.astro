@@ -1,0 +1,49 @@
+---
+import { services } from "../data/site";
+import Icon from "./Icon.astro";
+
+const iconFor: Record<string, string> = {
+  "dak-renovatie": "layers",
+  vervanging: "wrench",
+  "dak-reparatie": "shield",
+  "dakpannen-reparatie": "wrench",
+  dakgoot: "leaf",
+  lekdetectie: "pin",
+  "stormschade-dakpannen": "shield",
+  "schoorsteen-reparatie": "wrench",
+};
+---
+
+<section id="diensten" class="bg-neutral-50 py-20">
+  <div class="container-x">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="eyebrow">Onze Diensten</p>
+      <h2 class="mt-4 text-3xl sm:text-4xl">Diensten voor elk dak</h2>
+      <p class="mt-4 leading-relaxed">
+        Van complete renovatie tot snelle reparatie — bekijk waarmee wij u van dienst
+        kunnen zijn.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        services.map((s) => (
+          <a
+            href={`/diensten/${s.slug}`}
+            class="group flex flex-col rounded-xl border border-black/5 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-card"
+          >
+            <span class="flex h-14 w-14 items-center justify-center rounded-lg bg-accent/10 text-accent transition group-hover:bg-accent group-hover:text-white">
+              <Icon name={iconFor[s.slug] ?? "wrench"} size={28} />
+            </span>
+            <h3 class="mt-5 text-lg">{s.title}</h3>
+            <p class="mt-2 line-clamp-3 text-sm leading-relaxed">{s.intro}</p>
+            <span class="mt-4 inline-flex items-center gap-1.5 font-display text-sm font-bold text-accent">
+              Meer info
+              <Icon name="arrow" size={16} class="transition group-hover:translate-x-1" />
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

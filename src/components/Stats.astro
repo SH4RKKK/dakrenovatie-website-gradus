@@ -1,0 +1,18 @@
+---
+import { stats } from "../data/content";
+---
+
+<section class="bg-accent py-14 text-white">
+  <div class="container-x grid gap-10 text-center sm:grid-cols-3">
+    {
+      stats.map((s) => (
+        <div>
+          <div class="font-display text-5xl font-black leading-none sm:text-6xl">
+            {s.value}
+          </div>
+          <div class="mt-3 text-lg tracking-wide text-white/90">{s.label}</div>
+        </div>
+      ))
+    }
+  </div>
+</section>

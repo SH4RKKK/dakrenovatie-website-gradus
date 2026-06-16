@@ -1,0 +1,79 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import QuoteForm from "../../components/QuoteForm.astro";
+import CostCta from "../../components/CostCta.astro";
+import Icon from "../../components/Icon.astro";
+import { site, services } from "../../data/site";
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+---
+
+<Layout title={`${service.title} — ${site.name}`} description={service.intro}>
+  <!-- Service hero -->
+  <section class="relative overflow-hidden bg-neutral-50">
+    <div
+      class="pointer-events-none absolute -right-40 -top-40 h-[26rem] w-[26rem] rounded-full bg-accent/10 blur-3xl"
+    >
+    </div>
+    <div class="container-x relative grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-20">
+      <div>
+        <p class="eyebrow">{service.eyebrow}</p>
+        <h1 class="mt-4 text-4xl sm:text-5xl">{service.headline}</h1>
+        <p class="mt-6 max-w-md text-lg leading-relaxed">{service.intro}</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="/contact" class="btn-primary">Offerte aanvragen</a>
+          <a href={`tel:${site.phone}`} class="btn-ghost">
+            <Icon name="phone" size={18} /> Bel direct
+          </a>
+        </div>
+      </div>
+      <div
+        class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-ink to-[#2c3e4a] shadow-card"
+      >
+        <div
+          class="absolute inset-0 opacity-15"
+          style="background-image: repeating-linear-gradient(135deg, #fff 0 2px, transparent 2px 20px);"
+        >
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center text-white/80">
+          <Icon name="wrench" size={88} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What we offer -->
+  <section class="py-20">
+    <div class="container-x grid gap-12 lg:grid-cols-2">
+      <div>
+        <h2 class="text-3xl sm:text-4xl">Wat u van ons mag verwachten</h2>
+        <p class="mt-5 leading-relaxed">
+          Ons ervaren team pakt {service.title.toLowerCase()} grondig en vakkundig aan,
+          met heldere communicatie en kwaliteitsmaterialen van begin tot eind.
+        </p>
+      </div>
+      <ul class="space-y-4">
+        {
+          service.bullets.map((b) => (
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Icon name="check" size={16} />
+              </span>
+              <span class="leading-relaxed text-heading">{b}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CostCta />
+  <QuoteForm />
+</Layout>

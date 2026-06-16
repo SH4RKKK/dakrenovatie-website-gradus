@@ -1,0 +1,55 @@
+---
+import Layout from "../layouts/Layout.astro";
+import QuoteForm from "../components/QuoteForm.astro";
+import Icon from "../components/Icon.astro";
+import { site } from "../data/site";
+
+const contactItems = [
+  { icon: "phone", label: "Telefoon", value: site.phoneDisplay, href: `tel:${site.phone}` },
+  { icon: "mail", label: "Email", value: site.email, href: `mailto:${site.email}` },
+  { icon: "pin", label: "Werkgebied", value: "Midden-Nederland", href: null },
+];
+---
+
+<Layout title={`Contact — ${site.name}`}>
+  <!-- Page header -->
+  <section class="bg-ink py-16 text-white">
+    <div class="container-x text-center">
+      <p class="eyebrow">Contact</p>
+      <h1 class="mt-4 text-4xl text-white sm:text-5xl">Neem contact met ons op</h1>
+      <p class="mx-auto mt-4 max-w-xl text-white/70">
+        Vragen over uw dak of een offerte nodig? We staan voor u klaar.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact info -->
+  <section class="py-16">
+    <div class="container-x grid gap-6 sm:grid-cols-3">
+      {
+        contactItems.map((c) => {
+          const inner = (
+            <div class="flex h-full flex-col items-center rounded-xl border border-black/5 bg-white p-8 text-center shadow-sm">
+              <span class="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Icon name={c.icon} size={28} />
+              </span>
+              <h2 class="mt-5 font-display text-sm font-bold uppercase tracking-wider text-heading">
+                {c.label}
+              </h2>
+              <p class="mt-2">{c.value}</p>
+            </div>
+          );
+          return c.href ? (
+            <a href={c.href} class="transition hover:-translate-y-1">
+              {inner}
+            </a>
+          ) : (
+            inner
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <QuoteForm />
+</Layout>

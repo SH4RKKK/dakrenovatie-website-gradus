@@ -1,0 +1,123 @@
+---
+import { site } from "../data/site";
+import Icon from "./Icon.astro";
+---
+
+<section id="offerte" class="py-20">
+  <div class="container-x">
+    <div class="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-black/5 shadow-card">
+      <div class="flex flex-col items-center bg-accent px-8 py-10 text-center text-white">
+        <span class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/70">
+          <Icon name="users" size={30} />
+        </span>
+        <p class="mt-4 font-display text-sm font-bold uppercase tracking-widest">
+          Offerte aanvragen
+        </p>
+      </div>
+
+      <div class="bg-white px-6 py-10 sm:px-10">
+        <h2 class="text-3xl uppercase sm:text-4xl">Vraag hier uw gratis offerte aan</h2>
+        <p class="mt-3 leading-relaxed">
+          Laat uw gegevens achter en we nemen zo snel mogelijk contact met u op.
+        </p>
+
+        <form id="quote-form" class="mt-8 grid gap-5 sm:grid-cols-2" novalidate>
+          <div>
+            <label for="voornaam" class="mb-1.5 block text-sm font-semibold text-heading"
+              >Voornaam</label
+            >
+            <input
+              id="voornaam"
+              name="voornaam"
+              type="text"
+              class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+            />
+          </div>
+          <div>
+            <label for="achternaam" class="mb-1.5 block text-sm font-semibold text-heading"
+              >Achternaam</label
+            >
+            <input
+              id="achternaam"
+              name="achternaam"
+              type="text"
+              class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+            />
+          </div>
+          <div>
+            <label for="email" class="mb-1.5 block text-sm font-semibold text-heading">
+              Email <span class="text-accent">(Vereist)</span>
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+            />
+          </div>
+          <div>
+            <label for="telefoon" class="mb-1.5 block text-sm font-semibold text-heading"
+              >Telefoonnummer</label
+            >
+            <input
+              id="telefoon"
+              name="telefoon"
+              type="tel"
+              class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+            />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="bericht" class="mb-1.5 block text-sm font-semibold text-heading"
+              >Uw bericht</label
+            >
+            <textarea
+              id="bericht"
+              name="bericht"
+              rows="4"
+              class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+            ></textarea>
+          </div>
+          <div class="sm:col-span-2">
+            <button type="submit" class="btn-primary w-full sm:w-auto">Verstuur aanvraag</button>
+            <p id="form-error" class="mt-3 hidden text-sm text-accent"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ email: site.email }}>
+  // Front-end only: build a mailto link from the form. Swap this single handler
+  // for a real backend/form endpoint later — everything else stays the same.
+  const form = document.getElementById("quote-form");
+  const errEl = document.getElementById("form-error");
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const emailVal = String(data.get("email") ?? "").trim();
+
+    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      if (errEl) {
+        errEl.textContent = "Vul een geldig e-mailadres in.";
+        errEl.classList.remove("hidden");
+      }
+      document.getElementById("email")?.focus();
+      return;
+    }
+    errEl?.classList.add("hidden");
+
+    const lines = [
+      `Naam: ${data.get("voornaam") ?? ""} ${data.get("achternaam") ?? ""}`.trim(),
+      `Email: ${emailVal}`,
+      `Telefoon: ${data.get("telefoon") ?? ""}`,
+      "",
+      `${data.get("bericht") ?? ""}`,
+    ];
+    const subject = encodeURIComponent("Offerteaanvraag via website");
+    const body = encodeURIComponent(lines.join("\n"));
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  });
+</script>

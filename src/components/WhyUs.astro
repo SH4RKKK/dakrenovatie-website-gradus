@@ -1,0 +1,46 @@
+---
+import { reasons } from "../data/content";
+import Icon from "./Icon.astro";
+
+const icons = ["award", "shield", "star", "heart"];
+---
+
+<section class="py-20">
+  <div class="container-x grid items-start gap-12 lg:grid-cols-2">
+    <div class="lg:sticky lg:top-28">
+      <!-- Decorative panel — replace with a real on-site photo later. -->
+      <div
+        class="relative mb-8 aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-ink to-[#2c3e4a] shadow-card"
+      >
+        <div
+          class="absolute inset-0 opacity-15"
+          style="background-image: repeating-linear-gradient(135deg, #fff 0 2px, transparent 2px 20px);"
+        >
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center text-white/80">
+          <Icon name="shield" size={88} />
+        </div>
+      </div>
+      <p class="eyebrow">Waarom Dakrenovatie Midden-Nederland</p>
+      <h2 class="mt-4 text-3xl sm:text-4xl">Waarom voor ons kiezen?</h2>
+      <p class="mt-6 leading-relaxed">
+        Bij Dakrenovatie Midden-Nederland zetten we de standaard hoog dankzij onze
+        expertise, toewijding en betrouwbaarheid. Ons ervaren team staat garant voor:
+      </p>
+    </div>
+
+    <div class="grid gap-6 sm:grid-cols-2">
+      {
+        reasons.map((r, i) => (
+          <div class="rounded-xl border border-black/5 bg-white p-7 shadow-sm">
+            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+              <Icon name={icons[i % icons.length]} size={28} />
+            </span>
+            <h3 class="mt-5 text-lg">{r.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed">{r.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,49 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Icon from "../components/Icon.astro";
+import { site } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = `${site.name} — Dakdekker & dakrenovatie`,
+  description = "Specialist in dakpannen, dakrenovatie en professionele dakbedekking in Midden-Nederland. Vernieuwing, reparatie en renovatie — Uw Dak, Onze Zorg.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/jpeg" href={site.logo} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="antialiased">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Floating quick-contact button (mirrors the reference chat bubble) -->
+    <a
+      href={`tel:${site.phone}`}
+      class="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-blue)] text-white shadow-lg transition hover:scale-105"
+      aria-label="Bel ons direct"
+    >
+      <Icon name="phone" size={24} />
+    </a>
+  </body>
+</html>

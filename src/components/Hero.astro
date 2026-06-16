@@ -1,0 +1,70 @@
+---
+import { site } from "../data/site";
+import Icon from "./Icon.astro";
+
+const trust = [
+  "Gratis inspectie",
+  "Binnen 24 uur hulp bij spoed",
+  "Duurzame kwaliteitsmaterialen",
+];
+---
+
+<section class="relative overflow-hidden bg-neutral-50">
+  <!-- soft brand glow -->
+  <div
+    class="pointer-events-none absolute -right-40 -top-40 h-[28rem] w-[28rem] rounded-full bg-accent/10 blur-3xl"
+  >
+  </div>
+  <div class="container-x relative grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
+    <div>
+      <p class="eyebrow">{site.slogan}</p>
+      <h1 class="mt-4 text-4xl uppercase sm:text-5xl lg:text-6xl">
+        Dakdekking<br />voor elk seizoen
+      </h1>
+      <p class="mt-6 max-w-md text-lg leading-relaxed">
+        Vertrouw op onze experts voor hoogwaardige dakbedekking die bescherming en
+        comfort biedt, jaar in, jaar uit.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="/contact" class="btn-primary">Offerte aanvragen</a>
+        <a href={`tel:${site.phone}`} class="btn-ghost">
+          <Icon name="phone" size={18} /> Bel direct
+        </a>
+      </div>
+      <ul class="mt-10 space-y-2.5">
+        {
+          trust.map((t) => (
+            <li class="flex items-center gap-3 text-sm font-medium text-heading">
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Icon name="check" size={14} />
+              </span>
+              {t}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- Decorative visual panel — replace with real roof photography later. -->
+    <div class="relative">
+      <div
+        class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-ink to-[#2c3e4a] shadow-card"
+      >
+        <div
+          class="absolute inset-0 opacity-20"
+          style="background-image: repeating-linear-gradient(135deg, #fff 0 2px, transparent 2px 22px);"
+        >
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <Icon name="wrench" size={96} class="text-white/80" />
+        </div>
+      </div>
+      <div
+        class="absolute -bottom-6 -left-6 rounded-xl bg-accent px-6 py-4 text-white shadow-lg"
+      >
+        <span class="font-display text-3xl font-black leading-none">15</span>
+        <span class="ml-1 text-sm font-semibold">jaar<br />ervaring</span>
+      </div>
+    </div>
+  </div>
+</section>

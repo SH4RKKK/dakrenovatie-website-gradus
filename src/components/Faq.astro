@@ -1,0 +1,34 @@
+---
+import { faq } from "../data/content";
+import Icon from "./Icon.astro";
+---
+
+<section class="bg-ink py-20">
+  <div class="container-x">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="eyebrow">FAQ</p>
+      <h2 class="mt-4 text-3xl text-white sm:text-4xl">Veelgestelde vragen</h2>
+    </div>
+
+    <div class="mx-auto mt-12 max-w-3xl space-y-3">
+      {
+        faq.map((item) => (
+          <details class="group overflow-hidden rounded-lg bg-white" name="faq">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5">
+              <span class="font-display text-base font-bold text-heading sm:text-lg">
+                {item.q}
+              </span>
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center bg-accent text-white">
+                <Icon name="plus" size={20} class="block group-open:hidden" />
+                <Icon name="minus" size={20} class="hidden group-open:block" />
+              </span>
+            </summary>
+            <div class="border-t border-black/5 bg-neutral-50 px-6 py-5 leading-relaxed">
+              {item.a}
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

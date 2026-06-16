@@ -1,0 +1,86 @@
+---
+import { site, services } from "../data/site";
+import Icon from "./Icon.astro";
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-ink text-white/70">
+  <div class="container-x grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <div class="inline-flex rounded-lg bg-white p-3">
+        <img src={site.logo} alt={site.name} class="h-12 w-auto" />
+      </div>
+      <p class="mt-5 max-w-xs text-sm leading-relaxed">
+        Uw specialist in hoogwaardige dakpannen en professionele dakbedekking in
+        Midden-Nederland. {site.slogan}.
+      </p>
+    </div>
+
+    <div>
+      <h4 class="font-display text-sm font-bold uppercase tracking-wider text-white">
+        Navigatie
+      </h4>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        <li><a href="/" class="transition hover:text-accent">Home</a></li>
+        <li><a href="/diensten" class="transition hover:text-accent">Diensten</a></li>
+        <li><a href="/contact" class="transition hover:text-accent">Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="font-display text-sm font-bold uppercase tracking-wider text-white">
+        Diensten
+      </h4>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        {
+          services.slice(0, 6).map((s) => (
+            <li>
+              <a href={`/diensten/${s.slug}`} class="transition hover:text-accent">
+                {s.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="font-display text-sm font-bold uppercase tracking-wider text-white">
+        Contact
+      </h4>
+      <ul class="mt-4 space-y-3 text-sm">
+        <li>
+          <a
+            href={`tel:${site.phone}`}
+            class="flex items-center gap-2.5 transition hover:text-accent"
+          >
+            <Icon name="phone" size={18} class="text-accent" />
+            {site.phoneDisplay}
+          </a>
+        </li>
+        <li>
+          <a
+            href={`mailto:${site.email}`}
+            class="flex items-center gap-2.5 transition hover:text-accent"
+          >
+            <Icon name="mail" size={18} class="text-accent" />
+            {site.email}
+          </a>
+        </li>
+        <li class="flex items-center gap-2.5">
+          <Icon name="pin" size={18} class="text-accent" />
+          Midden-Nederland
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div
+      class="container-x flex flex-col items-center justify-between gap-2 py-6 text-xs sm:flex-row"
+    >
+      <p>© {year} {site.name}. Alle rechten voorbehouden.</p>
+      <p>{site.tagline}</p>
+    </div>
+  </div>
+</footer>
