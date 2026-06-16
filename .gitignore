@@ -35,5 +35,8 @@ testing-screenshots/
 # derived render of the brand flyer (regenerable from the PDF)
 flyer_render/
 
+# personal notes / scratch
+todo.txt
+
 # claude local (personal) settings
 .claude/settings.local.json
