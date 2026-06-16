@@ -16,7 +16,7 @@ export function getStaticPaths() {
 const { service } = Astro.props;
 ---
 
-<Layout title={`${service.title} — ${site.name}`} description={service.intro}>
+<Layout title={`${service.title}, ${site.name}`} description={service.intro}>
   <!-- Service hero -->
   <section class="relative overflow-hidden bg-neutral-50">
     <div

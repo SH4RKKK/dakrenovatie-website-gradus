@@ -28,7 +28,7 @@ test-results/
 playwright-report/
 playwright/.cache/
 
-# screenshot iteration artifacts (visual history; not versioned by default — remove
+# screenshot iteration artifacts (visual history; not versioned by default, remove
 # this line if you want screenshots committed)
 testing-screenshots/
 

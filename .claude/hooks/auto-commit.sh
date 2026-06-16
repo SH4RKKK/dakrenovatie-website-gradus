@@ -17,7 +17,7 @@ if [ -z "$(git status --porcelain)" ]; then
   exit 0
 fi
 
-# Don't interfere while a merge / rebase / cherry-pick is in progress —
+# Don't interfere while a merge / rebase / cherry-pick is in progress , 
 # auto-committing mid-operation would corrupt the user's intended history.
 gitdir="$(git rev-parse --git-dir)"
 if [ -e "$gitdir/MERGE_HEAD" ] || [ -d "$gitdir/rebase-merge" ] \

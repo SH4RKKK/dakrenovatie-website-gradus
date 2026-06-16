@@ -41,7 +41,7 @@ export const reasons = [
   },
   {
     title: "Betrouwbaarheid",
-    body: "Heldere afspraken, eerlijke prijzen en werk dat we nakomen — daar kunt u op rekenen.",
+    body: "Heldere afspraken, eerlijke prijzen en werk dat we nakomen, daar kunt u op rekenen.",
   },
   {
     title: "Kwaliteit",
@@ -79,7 +79,7 @@ export const testimonials = [
 export const faq = [
   {
     q: "Welke soorten dakpannen zijn het meest geschikt voor mijn huis?",
-    a: "Dat hangt af van de stijl van uw woning, de helling van het dak en uw budget. We adviseren onder meer keramische pannen, betonpannen en leien — tijdens een vrijblijvende inspectie bespreken we welke optie het beste bij uw situatie past.",
+    a: "Dat hangt af van de stijl van uw woning, de helling van het dak en uw budget. We adviseren onder meer keramische pannen, betonpannen en leien, tijdens een vrijblijvende inspectie bespreken we welke optie het beste bij uw situatie past.",
   },
   {
     q: "Hoe lang duurt het gemiddeld om een dak met dakpannen te leggen?",
@@ -95,6 +95,6 @@ export const faq = [
   },
   {
     q: "Hoe worden de kosten van dakpannen berekend en kan ik een offerte krijgen?",
-    a: "De kosten hangen af van het oppervlak, het type pannen en eventueel bijkomend werk zoals isolatie of herstel. U ontvangt altijd een heldere, vrijblijvende offerte vooraf — vraag hem eenvoudig aan via het formulier op deze site.",
+    a: "De kosten hangen af van het oppervlak, het type pannen en eventueel bijkomend werk zoals isolatie of herstel. U ontvangt altijd een heldere, vrijblijvende offerte vooraf, vraag hem eenvoudig aan via het formulier op deze site.",
   },
 ];

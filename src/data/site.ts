@@ -1,12 +1,12 @@
 // Central site configuration. Front-end only: the quote form submits via the
-// mailto address below — swap `email` for a real backend/form endpoint later.
+// mailto address below, swap `email` for a real backend/form endpoint later.
 export const site = {
   name: "Dakrenovatie Midden-Nederland",
   tagline: "Vernieuwing · Reparatie · Renovatie",
   slogan: "Uw Dak, Onze Zorg",
   phone: "0614969048",
   phoneDisplay: "06 14 96 90 48",
-  email: "info@dakrenovatiemiddennederland.nl", // PLACEHOLDER — change to real address
+  email: "info@dakrenovatiemiddennederland.nl", // PLACEHOLDER, change to real address
   domain: "dakrenovatiemiddennederland.nl",
   logo: "/logo.jpg",
 };
@@ -36,7 +36,7 @@ export const services: Service[] = [
     eyebrow: "Dak Renovatie",
     headline: "Een compleet vernieuwd dak dat decennia meegaat",
     intro:
-      "Of uw dak nu toe is aan een grondige opknapbeurt of een volledige vernieuwing — ons ervaren team renoveert uw dak vakkundig, met oog voor isolatie, afwerking en duurzaamheid.",
+      "Of uw dak nu toe is aan een grondige opknapbeurt of een volledige vernieuwing, ons ervaren team renoveert uw dak vakkundig, met oog voor isolatie, afwerking en duurzaamheid.",
     bullets: [
       "Volledige inspectie en helder renovatieplan vooraf",
       "Hoogwaardige, duurzame materialen van gerenommeerde fabrikanten",
@@ -103,7 +103,7 @@ export const services: Service[] = [
     eyebrow: "Lekdetectie",
     headline: "De oorzaak van uw lekkage, nauwkeurig opgespoord",
     intro:
-      "Met moderne technieken vinden we precies waar het lek zit — zonder onnodig sloopwerk.",
+      "Met moderne technieken vinden we precies waar het lek zit, zonder onnodig sloopwerk.",
     bullets: ["Nauwkeurige opsporing", "Geen onnodige schade", "Helder advies"],
     full: false,
   },
@@ -123,7 +123,7 @@ export const services: Service[] = [
     eyebrow: "Schoorsteen Reparatie",
     headline: "Vakkundig schoorsteenherstel",
     intro:
-      "Voegwerk, loodslabben of een scheve schoorsteen — wij herstellen het veilig en netjes.",
+      "Voegwerk, loodslabben of een scheve schoorsteen, wij herstellen het veilig en netjes.",
     bullets: ["Herstel van voegwerk en lood", "Veilig werken op hoogte", "Nette afwerking"],
     full: false,
   },
