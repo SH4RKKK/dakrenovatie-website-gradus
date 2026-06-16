@@ -53,26 +53,27 @@ export const reasons = [
   },
 ];
 
+// PLACEHOLDER reviews, replace with real customer testimonials before launch.
 export const testimonials = [
   {
     quote:
-      "Ik had dringend nieuwe dakpannen nodig vanwege lekkages, en Dakrenovatie Midden-Nederland stond direct voor me klaar. Hun team was efficiënt en vriendelijk, en mijn dak is nu weer helemaal waterdicht. Bedankt!",
-    name: "Lotte H.",
+      "[Voorbeeldreview 1] Vervang deze tekst door een echte klantbeoordeling. Hier komt straks wat een tevreden klant over het werk te zeggen heeft.",
+    name: "Voorbeeldklant 1",
   },
   {
     quote:
-      "Geweldige ervaring met Dakrenovatie Midden-Nederland! Vanaf de inspectie tot aan de installatie waren ze professioneel en efficiënt. Ze gaven uitstekend advies over de beste dakpannen voor mijn huis en leverden een prachtig eindresultaat.",
-    name: "Marieke",
+      "[Voorbeeldreview 2] Dit is een plaatshouder. Voeg hier een echte review toe zodra die beschikbaar is.",
+    name: "Voorbeeldklant 2",
   },
   {
     quote:
-      "Snel, netjes en eerlijk over de kosten. De communicatie was top en het werk werd binnen de afgesproken tijd opgeleverd. Een aanrader voor iedereen met dakproblemen.",
-    name: "Johan V.",
+      "[Voorbeeldreview 3] Plaatshoudertekst voor een klantbeoordeling. Te vervangen door een echte quote.",
+    name: "Voorbeeldklant 3",
   },
   {
     quote:
-      "Na stormschade snel geholpen. Ze regelden alles, ook richting de verzekering. Heel fijn dat je in zo'n situatie op een betrouwbaar team kunt rekenen.",
-    name: "Sandra B.",
+      "[Voorbeeldreview 4] Nog een voorbeeldreview als plaatshouder. Vervang voor publicatie door echte content.",
+    name: "Voorbeeldklant 4",
   },
 ];
 

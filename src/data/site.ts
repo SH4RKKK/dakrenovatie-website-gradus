@@ -4,9 +4,10 @@ export const site = {
   name: "Dakrenovatie Midden-Nederland",
   tagline: "Vernieuwing · Reparatie · Renovatie",
   slogan: "Uw Dak, Onze Zorg",
-  phone: "0614969048",
-  phoneDisplay: "06 14 96 90 48",
-  email: "info@dakrenovatiemiddennederland.nl", // PLACEHOLDER, change to real address
+  // PLACEHOLDERS, replace phone and email with the real details before launch.
+  phone: "0600000000",
+  phoneDisplay: "06 00 00 00 00 (voorbeeld)",
+  email: "voorbeeld@example.com",
   domain: "dakrenovatiemiddennederland.nl",
   logo: "/logo.jpg",
 };
