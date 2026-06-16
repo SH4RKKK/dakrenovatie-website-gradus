@@ -1,6 +1,7 @@
 ---
 import { site } from "../data/site";
 import Icon from "./Icon.astro";
+import RoofPanel from "./RoofPanel.astro";
 
 const trust = [
   "Gratis inspectie",
@@ -45,25 +46,14 @@ const trust = [
       </ul>
     </div>
 
-    <!-- Decorative visual panel — replace with real roof photography later. -->
+    <!-- Branded visual panel — replace with real roof photography later. -->
     <div class="relative">
+      <RoofPanel icon="layers" label="Uw dak in vertrouwde handen" class="aspect-[4/3]" />
       <div
-        class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-ink to-[#2c3e4a] shadow-card"
+        class="absolute -bottom-6 -left-6 flex items-end gap-2 rounded-xl bg-spark px-6 py-4 text-ink shadow-lg"
       >
-        <div
-          class="absolute inset-0 opacity-20"
-          style="background-image: repeating-linear-gradient(135deg, #fff 0 2px, transparent 2px 22px);"
-        >
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <Icon name="wrench" size={96} class="text-white/80" />
-        </div>
-      </div>
-      <div
-        class="absolute -bottom-6 -left-6 rounded-xl bg-accent px-6 py-4 text-white shadow-lg"
-      >
-        <span class="font-display text-3xl font-black leading-none">15</span>
-        <span class="ml-1 text-sm font-semibold">jaar<br />ervaring</span>
+        <span class="font-display text-4xl font-black leading-none">15</span>
+        <span class="text-sm font-bold leading-tight">jaar<br />ervaring</span>
       </div>
     </div>
   </div>

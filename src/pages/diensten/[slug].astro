@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import QuoteForm from "../../components/QuoteForm.astro";
 import CostCta from "../../components/CostCta.astro";
 import Icon from "../../components/Icon.astro";
+import RoofPanel from "../../components/RoofPanel.astro";
 import { site, services } from "../../data/site";
 
 export function getStaticPaths() {
@@ -34,18 +35,7 @@ const { service } = Astro.props;
           </a>
         </div>
       </div>
-      <div
-        class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-ink to-[#2c3e4a] shadow-card"
-      >
-        <div
-          class="absolute inset-0 opacity-15"
-          style="background-image: repeating-linear-gradient(135deg, #fff 0 2px, transparent 2px 20px);"
-        >
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center text-white/80">
-          <Icon name="wrench" size={88} />
-        </div>
-      </div>
+      <RoofPanel icon="wrench" label={service.title} class="aspect-[4/3]" />
     </div>
   </section>
 

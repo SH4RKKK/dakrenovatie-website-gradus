@@ -1,5 +1,5 @@
 ---
-import Icon from "./Icon.astro";
+import RoofPanel from "./RoofPanel.astro";
 ---
 
 <section id="over-ons" class="py-20">
@@ -24,18 +24,7 @@ import Icon from "./Icon.astro";
       <a href="/contact" class="btn-primary mt-8">Offerte aanvragen</a>
     </div>
 
-    <!-- Decorative panel — replace with a real project photo later. -->
-    <div
-      class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#2c3e4a] to-ink shadow-card"
-    >
-      <div
-        class="absolute inset-0 opacity-10"
-        style="background-image: repeating-linear-gradient(45deg, #fff 0 2px, transparent 2px 24px);"
-      >
-      </div>
-      <div class="absolute inset-0 flex items-center justify-center text-white/80">
-        <Icon name="layers" size={88} />
-      </div>
-    </div>
+    <!-- Branded panel — replace with a real project photo later. -->
+    <RoofPanel icon="users" label="Een toegewijd team" class="aspect-[4/3]" />
   </div>
 </section>

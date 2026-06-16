@@ -2,19 +2,21 @@
 
 /* ------------------------------------------------------------------ *
  * Design tokens — Dakrenovatie Midden-Nederland
- * Orange is the primary accent (from the reference site). The brand
- * logo is blue, so a supporting blue ties the logo into the palette.
- * Refine these in the screenshot-iteration loop.
+ * Palette sampled from the brand LOGO and FLYER (the source of truth):
+ *   azure blue  #0082c8  — primary (logo)
+ *   yellow      #f0dc00  — accent spark (flyer's diagonal + checks)
+ * Dark sections use a deep navy derived from the blue so they read as
+ * part of the brand rather than generic black.
  * ------------------------------------------------------------------ */
 @theme {
-  --color-accent: #ed4b1c; /* vermillion CTA / highlights */
-  --color-accent-600: #d63f12; /* hover */
-  --color-amber: #f39200; /* active-nav highlight */
-  --color-ink: #1b1b1b; /* dark sections */
-  --color-ink-700: #2a2a2a;
-  --color-heading: #232f37; /* charcoal headings */
-  --color-body: #586068; /* body text */
-  --color-blue: #1c8fd1; /* logo blue, supporting accent */
+  --color-accent: #0082c8; /* brand blue — primary CTA / highlights */
+  --color-accent-600: #006ba6; /* hover */
+  --color-spark: #f0dc00; /* flyer yellow — accent spark */
+  --color-spark-600: #d9c700;
+  --color-ink: #0f2733; /* deep navy dark sections */
+  --color-ink-700: #163646;
+  --color-heading: #14222b; /* charcoal headings */
+  --color-body: #55636b; /* body text */
 
   --font-display: "Montserrat", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif;
@@ -96,11 +98,71 @@
   }
 
   .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     font-family: var(--font-display);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--color-accent);
     font-size: 0.85rem;
+  }
+  /* Yellow tick that precedes an eyebrow — the flyer's spark, used sparingly. */
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 0.3rem;
+    background: var(--color-spark);
+    border-radius: 2px;
+  }
+
+  /* Short yellow divider bar (e.g. under a centered heading). */
+  .spark-bar {
+    display: block;
+    height: 0.3rem;
+    width: 4.5rem;
+    border-radius: 2px;
+    background: var(--color-spark);
+  }
+
+  /* Branded decorative panel: blue field + roof-shingle texture, standing in
+     for photography. Pair with .diag-ribbon for the flyer's yellow swoosh. */
+  .brand-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: linear-gradient(150deg, var(--color-accent), #005a8c 85%);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+/* Roof-shingle texture — staggered scallop rows, kept subtle via opacity. */
+.shingle {
+  background-image:
+    radial-gradient(circle at 50% 0, transparent 0 9px, rgba(255, 255, 255, 0.5) 9px 10px, transparent 11px),
+    radial-gradient(circle at 50% 0, transparent 0 9px, rgba(255, 255, 255, 0.5) 9px 10px, transparent 11px);
+  background-size: 30px 18px;
+  background-position: 0 0, 15px 9px;
+}
+
+/* Yellow diagonal ribbon echoing the flyer's swoosh, anchored to a corner. */
+.diag-ribbon {
+  position: absolute;
+  top: 1.6rem;
+  right: -3rem;
+  width: 13rem;
+  height: 1.4rem;
+  transform: rotate(45deg);
+  background: var(--color-spark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

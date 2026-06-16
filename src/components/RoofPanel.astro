@@ -1,0 +1,24 @@
+---
+import Icon from "./Icon.astro";
+
+// Branded stand-in for photography: a blue shingle field with the flyer's
+// yellow diagonal ribbon and a roofing icon. Swap for a real photo later by
+// replacing this component's body with an <img>.
+interface Props {
+  icon?: string;
+  label?: string;
+  class?: string;
+}
+const { icon = "layers", label, class: className = "" } = Astro.props;
+---
+
+<div class:list={["brand-panel", className]}>
+  <div class="absolute inset-0 shingle opacity-[0.14]"></div>
+  <div class="diag-ribbon"></div>
+  <div class="relative flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
+    <span class="flex h-24 w-24 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/25">
+      <Icon name={icon} size={48} class="text-white" />
+    </span>
+    {label && <p class="font-display text-sm font-semibold uppercase tracking-widest text-white/85">{label}</p>}
+  </div>
+</div>

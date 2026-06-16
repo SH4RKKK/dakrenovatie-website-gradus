@@ -32,5 +32,8 @@ playwright/.cache/
 # this line if you want screenshots committed)
 testing-screenshots/
 
+# derived render of the brand flyer (regenerable from the PDF)
+flyer_render/
+
 # claude local (personal) settings
 .claude/settings.local.json
