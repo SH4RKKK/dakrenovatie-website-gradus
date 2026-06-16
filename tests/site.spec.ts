@@ -1,0 +1,123 @@
+import { test, expect, type Page } from "@playwright/test";
+
+const MOBILE = { width: 390, height: 844 };
+const DESKTOP = { width: 1440, height: 900 };
+
+// Collect uncaught page errors so we can assert pages are JS-clean.
+function trackErrors(page: Page): string[] {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(String(e)));
+  return errors;
+}
+
+test.describe("pages load and are JS-clean", () => {
+  for (const path of ["/", "/contact", "/diensten", "/diensten/dak-renovatie"]) {
+    test(`loads ${path} without page errors`, async ({ page }) => {
+      const errors = trackErrors(page);
+      const res = await page.goto(path);
+      expect(res?.status(), `status for ${path}`).toBeLessThan(400);
+      await expect(page.locator("header")).toBeVisible();
+      await expect(page.locator("footer")).toBeVisible();
+      expect(errors, `page errors on ${path}`).toEqual([]);
+    });
+  }
+});
+
+test.describe("homepage content", () => {
+  test("hero, sections and key copy are present", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Dakdekking");
+    await expect(page.getByText("Over Ons")).toBeVisible();
+    await expect(page.getByText("951")).toBeVisible(); // stats band
+    await expect(page.getByText("Veelgestelde vragen")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Vraag hier uw gratis offerte aan/i })
+    ).toBeVisible();
+  });
+});
+
+test.describe("desktop navigation", () => {
+  test.use({ viewport: DESKTOP });
+
+  test("nav links and CTA are visible; hamburger hidden", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header");
+    await expect(header.getByRole("link", { name: "Home" })).toBeVisible();
+    await expect(header.getByRole("link", { name: "Contact" })).toBeVisible();
+    await expect(header.getByRole("link", { name: "Offerte aanvragen" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Menu openen" })).toBeHidden();
+  });
+
+  test("Contact link navigates to the contact page", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("header").getByRole("link", { name: "Contact" }).click();
+    await expect(page).toHaveURL(/\/contact\/?$/);
+    await expect(page.getByRole("heading", { name: /Neem contact met ons op/i })).toBeVisible();
+  });
+});
+
+test.describe("mobile menu", () => {
+  test.use({ viewport: MOBILE });
+
+  test("opens, expands the Diensten submenu, and closes", async ({ page }) => {
+    await page.goto("/");
+    const openBtn = page.getByRole("button", { name: "Menu openen" });
+    await expect(openBtn).toBeVisible();
+
+    await openBtn.click();
+    // Scope to the mobile submenu (the same service names also appear in the
+    // homepage services grid, so an unscoped lookup would match those too).
+    const submenuItem = page
+      .locator("#submenu")
+      .getByRole("link", { name: "Stormschade Dakpannen" });
+    await expect(submenuItem).toBeHidden(); // submenu collapsed initially
+
+    await page.getByRole("button", { name: "Diensten" }).click();
+    await expect(submenuItem).toBeVisible();
+
+    await page.getByRole("button", { name: "Menu sluiten" }).click();
+    await expect(page.getByRole("button", { name: "Menu sluiten" })).toBeHidden();
+  });
+});
+
+test.describe("FAQ accordion", () => {
+  test("expands an item on click", async ({ page }) => {
+    await page.goto("/");
+    const firstItem = page.locator("details").first();
+    await expect(firstItem).not.toHaveAttribute("open", "");
+    await firstItem.locator("summary").click();
+    await expect(firstItem).toHaveAttribute("open", "");
+  });
+});
+
+test.describe("testimonial carousel", () => {
+  test("clicking a dot activates it", async ({ page }) => {
+    await page.goto("/");
+    const dot2 = page.locator("[data-dot='2']");
+    await dot2.scrollIntoViewIfNeeded();
+    await dot2.click();
+    await expect(dot2).toHaveAttribute("data-active", "");
+  });
+});
+
+test.describe("quote form validation", () => {
+  test("shows an error when email is missing", async ({ page }) => {
+    await page.goto("/contact");
+    await page.getByRole("button", { name: "Verstuur aanvraag" }).click();
+    await expect(page.getByText("Vul een geldig e-mailadres in.")).toBeVisible();
+    // Still on the contact page (no mailto navigation triggered).
+    await expect(page).toHaveURL(/\/contact\/?$/);
+  });
+});
+
+test.describe("service template", () => {
+  test("renders headline and benefit bullets", async ({ page }) => {
+    await page.goto("/diensten/dak-renovatie");
+    await expect(
+      page.getByRole("heading", { name: /Een compleet vernieuwd dak/i })
+    ).toBeVisible();
+    await expect(
+      page.getByText("Volledige inspectie en helder renovatieplan vooraf")
+    ).toBeVisible();
+  });
+});
