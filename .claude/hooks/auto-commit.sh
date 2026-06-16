@@ -26,7 +26,5 @@ if [ -e "$gitdir/MERGE_HEAD" ] || [ -d "$gitdir/rebase-merge" ] \
 fi
 
 git add -A
-git commit --quiet \
-  -m "chore: auto-checkpoint uncommitted changes" \
-  -m "Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
+git commit --quiet -m "chore: auto-checkpoint uncommitted changes"
 exit 0
