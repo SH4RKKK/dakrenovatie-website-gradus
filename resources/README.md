@@ -10,8 +10,6 @@ goedgekeurde reviews nooit publiek op de site terechtkomen.
 ## Structuur
 
 - `reviews/text/` — één JSON-bestand per goedgekeurde review.
-- `reviews/image/` — optionele foto's die bij een specifieke review horen
-  (verwijs ernaar via het `image`-veld in het review-JSON).
 - `page-images/` — losse sfeerfoto's om de reviewpagina mee op te vullen.
 
 ## Een review goedkeuren

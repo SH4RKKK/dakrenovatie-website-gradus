@@ -11,32 +11,17 @@ export type Review = {
   review: string;
   anonymous?: boolean;
   date?: string;
-  image?: string;
 };
 
 export type PublicReview = {
   quote: string;
   name: string;
-  image?: string;
 };
 
 const reviewModules = import.meta.glob<Review>("/resources/reviews/text/*.json", {
   eager: true,
   import: "default",
 });
-
-// Non-JSON assets resolve to their final URL string via Vite's default import.
-const imageModules = import.meta.glob<string>("/resources/reviews/image/*", {
-  eager: true,
-  import: "default",
-});
-
-// Map bare filename ("dak-jan.jpg") -> resolved asset URL.
-const imageByName = new Map<string, string>();
-for (const [path, url] of Object.entries(imageModules)) {
-  const file = path.split("/").pop();
-  if (file) imageByName.set(file, url);
-}
 
 // Newest first; reviews without a valid `review` text are skipped.
 const reviews: Review[] = Object.values(reviewModules)
@@ -46,5 +31,4 @@ const reviews: Review[] = Object.values(reviewModules)
 export const publicReviews: PublicReview[] = reviews.map((r) => ({
   quote: r.review,
   name: r.anonymous ? "Anonieme klant" : r.name?.trim() || "Tevreden klant",
-  image: r.image ? imageByName.get(r.image) : undefined,
 }));

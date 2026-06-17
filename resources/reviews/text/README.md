@@ -9,8 +9,7 @@ Eén JSON-bestand per goedgekeurde review. Formaat:
   "postcode": "1234 AB",
   "review": "Geweldig werk aan ons dak!",
   "anonymous": false,
-  "date": "2026-06-17",
-  "image": ""
+  "date": "2026-06-17"
 }
 ```
 
@@ -20,4 +19,3 @@ Eén JSON-bestand per goedgekeurde review. Formaat:
 - `review` — de tekst die op de site verschijnt. (verplicht)
 - `anonymous` — `true` verbergt de naam op de site ("Anonieme klant").
 - `date` — `JJJJ-MM-DD`; bepaalt de volgorde (nieuwste eerst).
-- `image` — optioneel; bestandsnaam in `../image/` (bv. `dak-jan.jpg`).

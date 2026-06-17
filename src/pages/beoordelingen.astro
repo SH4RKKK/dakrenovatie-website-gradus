@@ -51,14 +51,6 @@ const INITIAL = 6; // cards shown before scroll-loading kicks in
                     i >= INITIAL && "hidden",
                   ]}
                 >
-                  {r.image && (
-                    <img
-                      src={r.image}
-                      alt=""
-                      loading="lazy"
-                      class="mb-4 h-44 w-full rounded-lg object-cover"
-                    />
-                  )}
                   <p class="italic leading-relaxed text-heading">“{r.quote}”</p>
                   <p class="mt-4 font-display font-bold text-heading">{r.name}</p>
                 </article>
