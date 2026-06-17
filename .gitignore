@@ -35,6 +35,10 @@ testing-screenshots/
 # derived render of the brand flyer (regenerable from the PDF)
 flyer_render/
 
+# customer review data (emails/postcodes) — never tracked; lives locally and is
+# added/approved by dropping JSON into resources/reviews, then rebuilding
+resources/reviews/
+
 # personal notes / scratch
 todo.txt
 
