@@ -10,7 +10,7 @@ Built as a custom **Astro + Tailwind CSS** site. The `example_page/` screenshots
 
 **Scope right now: front-end only.** Build the pages and components; the quote form submits via **email** for now (see Interactive pieces). Hosting is not decided yet, avoid host-specific config (no Netlify/Vercel adapters or platform functions) until the user picks a host, so the build stays portable.
 
-> **Status: greenfield.** As of this writing the repo contains only design assets (no `package.json`, no source). The first task is to scaffold the Astro project. Until then the commands below describe the intended setup.
+> **Status:** the Astro + Tailwind site is scaffolded and built (pages, components, quote/review forms). Ongoing work is refinement against the reference, not initial setup.
 
 ## Assets (reference material, not shipped as-is)
 
@@ -22,16 +22,13 @@ When recreating sections, open the relevant `example_page` screenshot rather tha
 
 ## Commands
 
-Once scaffolded (Astro defaults):
-
 ```bash
 npm install
 npm run dev        # local dev server with HMR
 npm run build      # production build to ./dist
 npm run preview    # serve the production build locally
+npm test           # Playwright end-to-end tests
 ```
-
-To scaffold: `npm create astro@latest` then add Tailwind via `npx astro add tailwind`.
 
 ## Brand / design system
 
