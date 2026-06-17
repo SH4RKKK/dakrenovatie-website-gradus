@@ -36,8 +36,12 @@ testing-screenshots/
 flyer_render/
 
 # customer review data (emails/postcodes) — never tracked; lives locally and is
-# added/approved by dropping JSON into resources/reviews, then rebuilding
-resources/reviews/
+# added/approved by dropping JSON into resources/reviews, then rebuilding.
+# The format README carries no customer data, so it is tracked.
+resources/reviews/*
+!resources/reviews/text
+resources/reviews/text/*
+!resources/reviews/text/README.md
 
 # personal notes / scratch
 todo.txt
