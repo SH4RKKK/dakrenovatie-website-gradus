@@ -15,6 +15,7 @@ export const site = {
 export const nav = [
   { label: "Home", href: "/" },
   { label: "Diensten", href: "/diensten", hasSubmenu: true },
+  { label: "Beoordelingen", href: "/beoordelingen" },
   { label: "Contact", href: "/contact" },
 ];
 

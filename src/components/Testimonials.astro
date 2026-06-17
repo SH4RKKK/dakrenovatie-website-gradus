@@ -1,5 +1,9 @@
 ---
-import { testimonials } from "../data/content";
+import { publicReviews } from "../data/reviews";
+import ReviewModal from "./ReviewModal.astro";
+
+// Single source of truth: approved reviews from /resources/reviews, capped at 10.
+const testimonials = publicReviews.slice(0, 10);
 ---
 
 <section class="bg-neutral-50 py-20">
@@ -41,7 +45,16 @@ import { testimonials } from "../data/content";
         }
       </div>
     </div>
+
+    <div class="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <button type="button" data-open-review class="btn-primary w-full sm:w-auto">
+        Schrijf een review
+      </button>
+      <a href="/beoordelingen" class="btn-ghost w-full sm:w-auto">Meer reviews</a>
+    </div>
   </div>
+
+  <ReviewModal />
 </section>
 
 <script>

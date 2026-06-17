@@ -11,7 +11,7 @@ function trackErrors(page: Page): string[] {
 }
 
 test.describe("pages load and are JS-clean", () => {
-  for (const path of ["/", "/contact", "/diensten", "/diensten/dak-renovatie"]) {
+  for (const path of ["/", "/contact", "/diensten", "/diensten/dak-renovatie", "/beoordelingen"]) {
     test(`loads ${path} without page errors`, async ({ page }) => {
       const errors = trackErrors(page);
       const res = await page.goto(path);
@@ -43,6 +43,7 @@ test.describe("desktop navigation", () => {
     await page.goto("/");
     const header = page.locator("header");
     await expect(header.getByRole("link", { name: "Home" })).toBeVisible();
+    await expect(header.getByRole("link", { name: "Beoordelingen" })).toBeVisible();
     await expect(header.getByRole("link", { name: "Contact" })).toBeVisible();
     await expect(header.getByRole("link", { name: "Offerte aanvragen" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Menu openen" })).toBeHidden();
@@ -107,6 +108,44 @@ test.describe("quote form validation", () => {
     await expect(page.getByText("Vul een geldig e-mailadres in.")).toBeVisible();
     // Still on the contact page (no mailto navigation triggered).
     await expect(page).toHaveURL(/\/contact\/?$/);
+  });
+
+  test("requires a postcode once the email is valid", async ({ page }) => {
+    await page.goto("/contact");
+    await page.locator("#email").fill("klant@example.com");
+    await page.getByRole("button", { name: "Verstuur aanvraag" }).click();
+    await expect(page.getByText("Vul uw postcode in.")).toBeVisible();
+    await expect(page).toHaveURL(/\/contact\/?$/);
+  });
+});
+
+test.describe("review modal", () => {
+  test("opens from the homepage and validates required fields", async ({ page }) => {
+    await page.goto("/");
+    const dialog = page.locator("#review-dialog");
+    await expect(dialog).toBeHidden();
+
+    await page.getByRole("button", { name: "Schrijf een review" }).click();
+    await expect(dialog).toBeVisible();
+
+    // Empty submit surfaces the email error first.
+    await dialog.getByRole("button", { name: "Verstuur review" }).click();
+    await expect(page.getByText("Vul een geldig e-mailadres in.")).toBeVisible();
+
+    // With a valid email but no postcode, the postcode error shows.
+    await page.locator("#rev-email").fill("klant@example.com");
+    await dialog.getByRole("button", { name: "Verstuur review" }).click();
+    await expect(page.getByText("Vul uw postcode in.")).toBeVisible();
+  });
+});
+
+test.describe("reviews page", () => {
+  test("renders seeded reviews and a write-review action", async ({ page }) => {
+    await page.goto("/beoordelingen");
+    await expect(
+      page.getByRole("heading", { name: /Wat onze klanten zeggen/i })
+    ).toBeVisible();
+    await expect(page.locator(".review-card").first()).toBeVisible();
   });
 });
 

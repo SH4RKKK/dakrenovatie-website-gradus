@@ -53,29 +53,8 @@ export const reasons = [
   },
 ];
 
-// PLACEHOLDER reviews, replace with real customer testimonials before launch.
-export const testimonials = [
-  {
-    quote:
-      "[Voorbeeldreview 1] Vervang deze tekst door een echte klantbeoordeling. Hier komt straks wat een tevreden klant over het werk te zeggen heeft.",
-    name: "Voorbeeldklant 1",
-  },
-  {
-    quote:
-      "[Voorbeeldreview 2] Dit is een plaatshouder. Voeg hier een echte review toe zodra die beschikbaar is.",
-    name: "Voorbeeldklant 2",
-  },
-  {
-    quote:
-      "[Voorbeeldreview 3] Plaatshoudertekst voor een klantbeoordeling. Te vervangen door een echte quote.",
-    name: "Voorbeeldklant 3",
-  },
-  {
-    quote:
-      "[Voorbeeldreview 4] Nog een voorbeeldreview als plaatshouder. Vervang voor publicatie door echte content.",
-    name: "Voorbeeldklant 4",
-  },
-];
+// Customer reviews now live as JSON in /resources/reviews/text and are loaded
+// via src/data/reviews.ts (single source of truth for the carousel + page).
 
 export const faq = [
   {

@@ -68,6 +68,19 @@ import Icon from "./Icon.astro";
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
             />
           </div>
+          <div>
+            <label for="postcode" class="mb-1.5 block text-sm font-semibold text-heading">
+              Postcode <span class="text-accent">(Vereist)</span>
+            </label>
+            <input
+              id="postcode"
+              name="postcode"
+              type="text"
+              required
+              aria-describedby="form-error"
+              class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
+            />
+          </div>
           <div class="sm:col-span-2">
             <label for="bericht" class="mb-1.5 block text-sm font-semibold text-heading"
               >Uw bericht</label
@@ -99,7 +112,13 @@ import Icon from "./Icon.astro";
     e.preventDefault();
     const data = new FormData(form);
     const emailVal = String(data.get("email") ?? "").trim();
+    const postcode = String(data.get("postcode") ?? "").trim();
     const emailEl = document.getElementById("email");
+    const postcodeEl = document.getElementById("postcode");
+
+    errEl?.classList.add("hidden");
+    emailEl?.removeAttribute("aria-invalid");
+    postcodeEl?.removeAttribute("aria-invalid");
 
     if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
       if (errEl) {
@@ -110,13 +129,21 @@ import Icon from "./Icon.astro";
       emailEl?.focus();
       return;
     }
-    errEl?.classList.add("hidden");
-    emailEl?.removeAttribute("aria-invalid");
+    if (!postcode) {
+      if (errEl) {
+        errEl.textContent = "Vul uw postcode in.";
+        errEl.classList.remove("hidden");
+      }
+      postcodeEl?.setAttribute("aria-invalid", "true");
+      postcodeEl?.focus();
+      return;
+    }
 
     const lines = [
       `Naam: ${data.get("voornaam") ?? ""} ${data.get("achternaam") ?? ""}`.trim(),
       `Email: ${emailVal}`,
       `Telefoon: ${data.get("telefoon") ?? ""}`,
+      `Postcode: ${postcode}`,
       "",
       `${data.get("bericht") ?? ""}`,
     ];

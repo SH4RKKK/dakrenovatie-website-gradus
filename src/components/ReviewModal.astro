@@ -1,0 +1,204 @@
+---
+import { site } from "../data/site";
+import Icon from "./Icon.astro";
+---
+
+<!--
+  Reusable "schrijf een review" modal. Drop <ReviewModal /> once on a page;
+  any button with a `data-open-review` attribute opens it. Front-end only:
+  the form builds a mailto link containing a plain-text summary plus a JSON
+  block the owner saves into /resources/reviews/text to approve. Swap this one
+  handler for a real backend later, everything else stays the same.
+-->
+<dialog
+  id="review-dialog"
+  class="w-[92%] max-w-lg overflow-hidden rounded-2xl border border-black/5 p-0 shadow-card backdrop:bg-black/50"
+  aria-labelledby="review-title"
+>
+  <div class="flex items-center justify-between bg-accent px-6 py-4 text-white">
+    <p id="review-title" class="font-display text-sm font-bold uppercase tracking-widest">
+      Schrijf een review
+    </p>
+    <button
+      type="button"
+      id="review-close"
+      class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 transition hover:bg-white/25"
+      aria-label="Sluiten"
+    >
+      <Icon name="close" size={20} />
+    </button>
+  </div>
+
+  <div class="bg-white px-6 py-6">
+    <p class="mb-5 text-sm leading-relaxed">
+      Deel uw ervaring met ons. Uw e-mailadres en postcode worden niet op de
+      site getoond, we gebruiken ze alleen om uw review te verifiëren.
+    </p>
+
+    <form id="review-form" class="grid gap-5" novalidate>
+      <div>
+        <label for="rev-naam" class="mb-1.5 block text-sm font-semibold text-heading"
+          >Naam</label
+        >
+        <input
+          id="rev-naam"
+          name="naam"
+          type="text"
+          class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+        />
+      </div>
+      <div>
+        <label for="rev-email" class="mb-1.5 block text-sm font-semibold text-heading">
+          Email <span class="text-accent">(Vereist)</span>
+        </label>
+        <input
+          id="rev-email"
+          name="email"
+          type="email"
+          required
+          aria-describedby="review-error"
+          class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
+        />
+      </div>
+      <div>
+        <label for="rev-postcode" class="mb-1.5 block text-sm font-semibold text-heading">
+          Postcode <span class="text-accent">(Vereist)</span>
+        </label>
+        <input
+          id="rev-postcode"
+          name="postcode"
+          type="text"
+          required
+          aria-describedby="review-error"
+          class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
+        />
+      </div>
+      <div>
+        <label for="rev-bericht" class="mb-1.5 block text-sm font-semibold text-heading">
+          Uw beoordeling <span class="text-accent">(Vereist)</span>
+        </label>
+        <textarea
+          id="rev-bericht"
+          name="review"
+          rows="4"
+          required
+          aria-describedby="review-error"
+          class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
+        ></textarea>
+      </div>
+      <label class="flex items-start gap-3 text-sm text-heading">
+        <input
+          id="rev-anon"
+          name="anonymous"
+          type="checkbox"
+          class="mt-0.5 h-4 w-4 accent-accent"
+        />
+        <span>Toon mijn naam niet op de site (weergeven als "Anonieme klant").</span>
+      </label>
+      <div>
+        <button type="submit" class="btn-primary w-full sm:w-auto">Verstuur review</button>
+        <p id="review-error" role="alert" class="mt-3 hidden text-sm text-red-600"></p>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<script define:vars={{ email: site.email }}>
+  const dialog = document.getElementById("review-dialog");
+  const form = document.getElementById("review-form");
+  const errEl = document.getElementById("review-error");
+  const closeBtn = document.getElementById("review-close");
+  const emailEl = document.getElementById("rev-email");
+  const postcodeEl = document.getElementById("rev-postcode");
+  const reviewEl = document.getElementById("rev-bericht");
+
+  const clearErrors = () => {
+    errEl?.classList.add("hidden");
+    [emailEl, postcodeEl, reviewEl].forEach((el) => el?.removeAttribute("aria-invalid"));
+  };
+
+  document.querySelectorAll("[data-open-review]").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      clearErrors();
+      dialog?.showModal();
+    })
+  );
+
+  const close = () => dialog?.close();
+  closeBtn?.addEventListener("click", close);
+  // Click on the backdrop (the dialog element itself) closes it.
+  dialog?.addEventListener("click", (e) => {
+    if (e.target === dialog) close();
+  });
+
+  const fail = (msg, el) => {
+    if (errEl) {
+      errEl.textContent = msg;
+      errEl.classList.remove("hidden");
+    }
+    el?.setAttribute("aria-invalid", "true");
+    el?.focus();
+  };
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    clearErrors();
+
+    const data = new FormData(form);
+    const naam = String(data.get("naam") ?? "").trim();
+    const emailVal = String(data.get("email") ?? "").trim();
+    const postcode = String(data.get("postcode") ?? "").trim();
+    const reviewText = String(data.get("review") ?? "").trim();
+    const anonymous = data.get("anonymous") === "on";
+
+    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      fail("Vul een geldig e-mailadres in.", emailEl);
+      return;
+    }
+    if (!postcode) {
+      fail("Vul uw postcode in.", postcodeEl);
+      return;
+    }
+    if (!reviewText) {
+      fail("Schrijf uw beoordeling.", reviewEl);
+      return;
+    }
+
+    const date = new Date().toISOString().slice(0, 10);
+    const review = {
+      name: naam,
+      email: emailVal,
+      postcode,
+      review: reviewText,
+      anonymous,
+      date,
+      image: "",
+    };
+    const json = JSON.stringify(review, null, 2);
+    const slug =
+      (naam || "anoniem")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "review";
+    const filename = `${date}-${slug}.json`;
+
+    const lines = [
+      "Nieuwe review via de website",
+      "",
+      `Naam: ${naam || "(leeg)"}`,
+      `Email: ${emailVal}`,
+      `Postcode: ${postcode}`,
+      `Anoniem weergeven: ${anonymous ? "Ja" : "Nee"}`,
+      "",
+      "Beoordeling:",
+      reviewText,
+      "",
+      `--- JSON (sla op als ${filename} in resources/reviews/text om goed te keuren) ---`,
+      json,
+    ];
+    const subject = encodeURIComponent("Nieuwe review via de website");
+    const body = encodeURIComponent(lines.join("\n"));
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    close();
+  });
+</script>

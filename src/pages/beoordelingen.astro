@@ -1,0 +1,122 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ReviewModal from "../components/ReviewModal.astro";
+import CostCta from "../components/CostCta.astro";
+import { site } from "../data/site";
+import { publicReviews } from "../data/reviews";
+
+// Decorative imagery to fill out the page; the owner curates these later.
+const pageImageModules = import.meta.glob<string>("/resources/page-images/*", {
+  eager: true,
+  import: "default",
+});
+const pageImages = Object.values(pageImageModules);
+
+const INITIAL = 6; // cards shown before scroll-loading kicks in
+---
+
+<Layout title={`Beoordelingen, ${site.name}`}>
+  <!-- Page header -->
+  <section class="bg-ink py-16 text-white">
+    <div class="container-x text-center">
+      <p class="eyebrow">Klantbeoordelingen</p>
+      <h1 class="mt-4 text-4xl text-white sm:text-5xl">Wat onze klanten zeggen</h1>
+      <p class="mx-auto mt-4 max-w-xl text-white/70">
+        Lees de ervaringen van onze klanten, of deel zelf uw verhaal over ons werk.
+      </p>
+      <button type="button" data-open-review class="btn-primary mt-8">
+        Schrijf een review
+      </button>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="py-16">
+    <div class="container-x">
+      {
+        publicReviews.length === 0 ? (
+          <div class="mx-auto max-w-md text-center">
+            <p class="text-lg">Er zijn nog geen reviews. Wees de eerste!</p>
+            <button type="button" data-open-review class="btn-primary mt-6">
+              Schrijf een review
+            </button>
+          </div>
+        ) : (
+          <>
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-reviews-grid>
+              {publicReviews.map((r, i) => (
+                <article
+                  class:list={[
+                    "review-card flex flex-col rounded-xl border border-black/5 bg-white p-6 shadow-sm",
+                    i >= INITIAL && "hidden",
+                  ]}
+                >
+                  {r.image && (
+                    <img
+                      src={r.image}
+                      alt=""
+                      loading="lazy"
+                      class="mb-4 h-44 w-full rounded-lg object-cover"
+                    />
+                  )}
+                  <p class="italic leading-relaxed text-heading">“{r.quote}”</p>
+                  <p class="mt-4 font-display font-bold text-heading">{r.name}</p>
+                </article>
+              ))}
+            </div>
+            <div data-reviews-sentinel aria-hidden="true" class="h-px w-full"></div>
+            <div class="mt-12 text-center">
+              <button type="button" data-open-review class="btn-ghost">
+                Schrijf een review
+              </button>
+            </div>
+          </>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    pageImages.length > 0 && (
+      <section class="bg-neutral-50 py-16">
+        <div class="container-x">
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {pageImages.map((src) => (
+              <img
+                src={src}
+                alt=""
+                loading="lazy"
+                class="h-56 w-full rounded-xl object-cover shadow-sm"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CostCta />
+  <ReviewModal />
+</Layout>
+
+<script>
+  const BATCH = 6;
+  const grid = document.querySelector("[data-reviews-grid]");
+  const sentinel = document.querySelector("[data-reviews-sentinel]");
+
+  if (grid && sentinel) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        const hidden = Array.from(grid.querySelectorAll<HTMLElement>(".review-card.hidden"));
+        hidden.slice(0, BATCH).forEach((el) => el.classList.remove("hidden"));
+        if (grid.querySelectorAll(".review-card.hidden").length === 0) {
+          observer.disconnect();
+          sentinel.remove();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(sentinel);
+  }
+</script>

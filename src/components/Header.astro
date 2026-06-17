@@ -59,6 +59,14 @@ const isActive = (href: string) =>
       </div>
 
       <a
+        href="/beoordelingen"
+        class:list={[
+          "font-display text-sm font-bold uppercase tracking-wide transition hover:text-accent",
+          isActive("/beoordelingen") ? "text-accent" : "text-heading",
+        ]}>Beoordelingen</a
+      >
+
+      <a
         href="/contact"
         class:list={[
           "font-display text-sm font-bold uppercase tracking-wide transition hover:text-accent",
@@ -132,6 +140,10 @@ const isActive = (href: string) =>
           ))
         }
       </ul>
+      <a
+        href="/beoordelingen"
+        class="block px-6 py-3.5 font-display font-semibold hover:bg-white/5">Beoordelingen</a
+      >
       <a
         href="/contact"
         class="block px-6 py-3.5 font-display font-semibold hover:bg-white/5">Contact</a
