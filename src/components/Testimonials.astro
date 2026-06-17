@@ -20,6 +20,14 @@ const testimonials = publicReviews.slice(0, 10);
           {
             testimonials.map((t) => (
               <figure class="w-full shrink-0 px-2 text-center">
+                {t.image && (
+                  <img
+                    src={t.image}
+                    alt=""
+                    loading="lazy"
+                    class="mx-auto mb-6 h-48 w-full max-w-md rounded-xl object-cover shadow-sm"
+                  />
+                )}
                 <blockquote class="text-lg italic leading-relaxed text-heading">
                   “{t.quote}”
                 </blockquote>
@@ -86,7 +94,7 @@ const testimonials = publicReviews.slice(0, 10);
       timer = window.setInterval(() => {
         index = (index + 1) % count;
         render();
-      }, 6000);
+      }, 3500);
     };
 
     render();
