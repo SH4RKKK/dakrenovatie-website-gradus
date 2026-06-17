@@ -137,6 +137,18 @@ test.describe("review modal", () => {
     await dialog.getByRole("button", { name: "Verstuur review" }).click();
     await expect(page.getByText("Vul uw postcode in.")).toBeVisible();
   });
+
+  test("closes on Escape and returns focus to the trigger", async ({ page }) => {
+    await page.goto("/beoordelingen");
+    const trigger = page.getByRole("button", { name: "Schrijf een review" }).first();
+    await trigger.click();
+    const dialog = page.locator("#review-dialog");
+    await expect(dialog).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
 });
 
 test.describe("reviews page", () => {
@@ -146,6 +158,20 @@ test.describe("reviews page", () => {
       page.getByRole("heading", { name: /Wat onze klanten zeggen/i })
     ).toBeVisible();
     await expect(page.locator(".review-card").first()).toBeVisible();
+  });
+
+  test("lazy-loads remaining reviews on scroll", async ({ page }) => {
+    await page.goto("/beoordelingen");
+    const hidden = page.locator(".review-card.hidden");
+    const initialHidden = await hidden.count();
+    // Only meaningful when there are more reviews than the initial batch.
+    test.skip(initialHidden === 0, "fewer reviews than the batch size; nothing to lazy-load");
+
+    for (let i = 0; i < 8 && (await hidden.count()) > 0; i++) {
+      await page.mouse.wheel(0, 20000);
+      await page.waitForTimeout(150);
+    }
+    await expect(hidden).toHaveCount(0);
   });
 });
 

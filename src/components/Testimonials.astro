@@ -61,15 +61,42 @@ const testimonials = publicReviews.slice(0, 10);
   document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((root) => {
     const track = root.querySelector<HTMLElement>("[data-track]");
     const dots = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dot]"));
-    if (!track) return;
+    // Nothing to drive (e.g. a build with zero approved reviews).
+    if (!track || dots.length === 0) return;
     let index = 0;
     const count = dots.length;
 
     const render = () => {
       track.style.transform = `translateX(-${index * 100}%)`;
-      dots.forEach((d, i) =>
-        i === index ? d.setAttribute("data-active", "") : d.removeAttribute("data-active")
-      );
+      dots.forEach((d, i) => {
+        if (i === index) {
+          d.setAttribute("data-active", "");
+          d.setAttribute("aria-current", "true");
+        } else {
+          d.removeAttribute("data-active");
+          d.removeAttribute("aria-current");
+        }
+      });
+    };
+
+    // Auto-advance only with multiple slides and when motion is welcome.
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const autoplay = count > 1 && !reduceMotion;
+    let timer: number | undefined;
+
+    const stop = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = undefined;
+      }
+    };
+    const restart = () => {
+      if (!autoplay) return;
+      stop();
+      timer = window.setInterval(() => {
+        index = (index + 1) % count;
+        render();
+      }, 3500);
     };
 
     dots.forEach((d, i) =>
@@ -80,14 +107,11 @@ const testimonials = publicReviews.slice(0, 10);
       })
     );
 
-    let timer: number;
-    const restart = () => {
-      clearInterval(timer);
-      timer = window.setInterval(() => {
-        index = (index + 1) % count;
-        render();
-      }, 3500);
-    };
+    // Pause auto-advance while the user hovers or keyboard-focuses the carousel.
+    root.addEventListener("mouseenter", stop);
+    root.addEventListener("mouseleave", restart);
+    root.addEventListener("focusin", stop);
+    root.addEventListener("focusout", restart);
 
     render();
     restart();

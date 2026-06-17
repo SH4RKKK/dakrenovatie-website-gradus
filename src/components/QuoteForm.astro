@@ -21,7 +21,12 @@ import Icon from "./Icon.astro";
           Laat uw gegevens achter en we nemen zo snel mogelijk contact met u op.
         </p>
 
-        <form id="quote-form" class="mt-8 grid gap-5 sm:grid-cols-2" novalidate>
+        <form
+          id="quote-form"
+          data-recipient={site.email}
+          class="mt-8 grid gap-5 sm:grid-cols-2"
+          novalidate
+        >
           <div>
             <label for="voornaam" class="mb-1.5 block text-sm font-semibold text-heading"
               >Voornaam</label
@@ -53,7 +58,6 @@ import Icon from "./Icon.astro";
               name="email"
               type="email"
               required
-              aria-describedby="form-error"
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
             />
           </div>
@@ -77,7 +81,6 @@ import Icon from "./Icon.astro";
               name="postcode"
               type="text"
               required
-              aria-describedby="form-error"
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
             />
           </div>
@@ -102,10 +105,13 @@ import Icon from "./Icon.astro";
   </div>
 </section>
 
-<script define:vars={{ email: site.email }}>
-  // Front-end only: build a mailto link from the form. Swap this single handler
-  // for a real backend/form endpoint later, everything else stays the same.
-  const form = document.getElementById("quote-form");
+<script>
+  // Front-end only: build a mailto link from the form. Swap `openMailto` in
+  // src/scripts/forms.ts for a real backend/form endpoint later and both forms
+  // switch over in one place.
+  import { isValidEmail, openMailto, showFieldError, clearFieldErrors } from "../scripts/forms";
+
+  const form = document.getElementById("quote-form") as HTMLFormElement | null;
   const errEl = document.getElementById("form-error");
 
   form?.addEventListener("submit", (e) => {
@@ -116,39 +122,24 @@ import Icon from "./Icon.astro";
     const emailEl = document.getElementById("email");
     const postcodeEl = document.getElementById("postcode");
 
-    errEl?.classList.add("hidden");
-    emailEl?.removeAttribute("aria-invalid");
-    postcodeEl?.removeAttribute("aria-invalid");
+    clearFieldErrors(errEl, [emailEl, postcodeEl]);
 
-    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
-      if (errEl) {
-        errEl.textContent = "Vul een geldig e-mailadres in.";
-        errEl.classList.remove("hidden");
-      }
-      emailEl?.setAttribute("aria-invalid", "true");
-      emailEl?.focus();
+    if (!isValidEmail(emailVal)) {
+      showFieldError(errEl, emailEl, "Vul een geldig e-mailadres in.");
       return;
     }
     if (!postcode) {
-      if (errEl) {
-        errEl.textContent = "Vul uw postcode in.";
-        errEl.classList.remove("hidden");
-      }
-      postcodeEl?.setAttribute("aria-invalid", "true");
-      postcodeEl?.focus();
+      showFieldError(errEl, postcodeEl, "Vul uw postcode in.");
       return;
     }
 
-    const lines = [
+    openMailto(form.dataset.recipient ?? "", "Offerteaanvraag via website", [
       `Naam: ${data.get("voornaam") ?? ""} ${data.get("achternaam") ?? ""}`.trim(),
       `Email: ${emailVal}`,
       `Telefoon: ${data.get("telefoon") ?? ""}`,
       `Postcode: ${postcode}`,
       "",
       `${data.get("bericht") ?? ""}`,
-    ];
-    const subject = encodeURIComponent("Offerteaanvraag via website");
-    const body = encodeURIComponent(lines.join("\n"));
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    ]);
   });
 </script>

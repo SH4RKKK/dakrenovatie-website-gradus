@@ -6,10 +6,11 @@ import { site } from "../data/site";
 import { publicReviews } from "../data/reviews";
 
 // Decorative imagery to fill out the page; the owner curates these later.
-const pageImageModules = import.meta.glob<string>("/resources/page-images/*", {
-  eager: true,
-  import: "default",
-});
+// Match image files only so the folder's README.md isn't picked up as an image.
+const pageImageModules = import.meta.glob<string>(
+  "/resources/page-images/*.{jpg,jpeg,png,webp,avif,gif,svg}",
+  { eager: true, import: "default" }
+);
 const pageImages = Object.values(pageImageModules);
 
 const INITIAL = 6; // cards shown before scroll-loading kicks in

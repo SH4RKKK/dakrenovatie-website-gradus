@@ -12,7 +12,7 @@ import Icon from "./Icon.astro";
 -->
 <dialog
   id="review-dialog"
-  class="w-[92%] max-w-lg overflow-hidden rounded-2xl border border-black/5 p-0 shadow-card backdrop:bg-black/50"
+  class="m-auto max-h-[90vh] w-[92%] max-w-lg overflow-y-auto rounded-2xl border border-black/5 p-0 shadow-card backdrop:bg-black/50"
   aria-labelledby="review-title"
 >
   <div class="flex items-center justify-between bg-accent px-6 py-4 text-white">
@@ -35,7 +35,7 @@ import Icon from "./Icon.astro";
       site getoond, we gebruiken ze alleen om uw review te verifiëren.
     </p>
 
-    <form id="review-form" class="grid gap-5" novalidate>
+    <form id="review-form" data-recipient={site.email} class="grid gap-5" novalidate>
       <div>
         <label for="rev-naam" class="mb-1.5 block text-sm font-semibold text-heading"
           >Naam</label
@@ -56,7 +56,6 @@ import Icon from "./Icon.astro";
           name="email"
           type="email"
           required
-          aria-describedby="review-error"
           class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
         />
       </div>
@@ -69,7 +68,6 @@ import Icon from "./Icon.astro";
           name="postcode"
           type="text"
           required
-          aria-describedby="review-error"
           class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
         />
       </div>
@@ -82,7 +80,6 @@ import Icon from "./Icon.astro";
           name="review"
           rows="4"
           required
-          aria-describedby="review-error"
           class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
         ></textarea>
       </div>
@@ -103,46 +100,48 @@ import Icon from "./Icon.astro";
   </div>
 </dialog>
 
-<script define:vars={{ email: site.email }}>
-  const dialog = document.getElementById("review-dialog");
-  const form = document.getElementById("review-form");
+<script>
+  import { isValidEmail, openMailto, showFieldError, clearFieldErrors } from "../scripts/forms";
+
+  const dialog = document.getElementById("review-dialog") as HTMLDialogElement | null;
+  const form = document.getElementById("review-form") as HTMLFormElement | null;
   const errEl = document.getElementById("review-error");
   const closeBtn = document.getElementById("review-close");
   const emailEl = document.getElementById("rev-email");
   const postcodeEl = document.getElementById("rev-postcode");
   const reviewEl = document.getElementById("rev-bericht");
+  const fields = [emailEl, postcodeEl, reviewEl];
 
-  const clearErrors = () => {
-    errEl?.classList.add("hidden");
-    [emailEl, postcodeEl, reviewEl].forEach((el) => el?.removeAttribute("aria-invalid"));
-  };
+  // Remember what opened the dialog so focus can return there on close (a11y).
+  let lastFocused: HTMLElement | null = null;
 
-  document.querySelectorAll("[data-open-review]").forEach((btn) =>
+  document.querySelectorAll<HTMLElement>("[data-open-review]").forEach((btn) =>
     btn.addEventListener("click", () => {
-      clearErrors();
+      lastFocused = btn;
+      clearFieldErrors(errEl, fields);
       dialog?.showModal();
     })
   );
 
   const close = () => dialog?.close();
   closeBtn?.addEventListener("click", close);
-  // Click on the backdrop (the dialog element itself) closes it.
-  dialog?.addEventListener("click", (e) => {
-    if (e.target === dialog) close();
-  });
 
-  const fail = (msg, el) => {
-    if (errEl) {
-      errEl.textContent = msg;
-      errEl.classList.remove("hidden");
-    }
-    el?.setAttribute("aria-invalid", "true");
-    el?.focus();
-  };
+  // Restore focus to the trigger whenever the dialog closes (button, Escape,
+  // backdrop, or submit).
+  dialog?.addEventListener("close", () => lastFocused?.focus());
+
+  // Backdrop click: the inner panel fills the dialog box, so detect clicks that
+  // land outside the dialog's rect rather than relying on event.target.
+  dialog?.addEventListener("click", (e) => {
+    const r = dialog.getBoundingClientRect();
+    const outside =
+      e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+    if (outside) close();
+  });
 
   form?.addEventListener("submit", (e) => {
     e.preventDefault();
-    clearErrors();
+    clearFieldErrors(errEl, fields);
 
     const data = new FormData(form);
     const naam = String(data.get("naam") ?? "").trim();
@@ -151,28 +150,21 @@ import Icon from "./Icon.astro";
     const reviewText = String(data.get("review") ?? "").trim();
     const anonymous = data.get("anonymous") === "on";
 
-    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
-      fail("Vul een geldig e-mailadres in.", emailEl);
+    if (!isValidEmail(emailVal)) {
+      showFieldError(errEl, emailEl, "Vul een geldig e-mailadres in.");
       return;
     }
     if (!postcode) {
-      fail("Vul uw postcode in.", postcodeEl);
+      showFieldError(errEl, postcodeEl, "Vul uw postcode in.");
       return;
     }
     if (!reviewText) {
-      fail("Schrijf uw beoordeling.", reviewEl);
+      showFieldError(errEl, reviewEl, "Schrijf uw beoordeling.");
       return;
     }
 
     const date = new Date().toISOString().slice(0, 10);
-    const review = {
-      name: naam,
-      email: emailVal,
-      postcode,
-      review: reviewText,
-      anonymous,
-      date,
-    };
+    const review = { name: naam, email: emailVal, postcode, review: reviewText, anonymous, date };
     const json = JSON.stringify(review, null, 2);
     const slug =
       (naam || "anoniem")
@@ -181,7 +173,7 @@ import Icon from "./Icon.astro";
         .replace(/^-+|-+$/g, "") || "review";
     const filename = `${date}-${slug}.json`;
 
-    const lines = [
+    openMailto(form.dataset.recipient ?? "", "Nieuwe review via de website", [
       "Nieuwe review via de website",
       "",
       `Naam: ${naam || "(leeg)"}`,
@@ -194,10 +186,7 @@ import Icon from "./Icon.astro";
       "",
       `--- JSON (sla op als ${filename} in resources/reviews/text om goed te keuren) ---`,
       json,
-    ];
-    const subject = encodeURIComponent("Nieuwe review via de website");
-    const body = encodeURIComponent(lines.join("\n"));
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    ]);
     close();
   });
 </script>
