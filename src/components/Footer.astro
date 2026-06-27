@@ -68,9 +68,12 @@ const year = new Date().getFullYear();
             {site.email}
           </a>
         </li>
-        <li class="flex items-center gap-2.5">
-          <Icon name="pin" size={18} class="text-accent" />
-          Midden-Nederland
+        <li class="flex items-start gap-2.5">
+          <Icon name="pin" size={18} class="mt-0.5 shrink-0 text-accent" />
+          <span>
+            {site.address.street}<br />
+            {site.address.zip} {site.address.city}
+          </span>
         </li>
       </ul>
     </div>
@@ -81,6 +84,7 @@ const year = new Date().getFullYear();
       class="container-x flex flex-col items-center justify-between gap-2 py-6 text-xs sm:flex-row"
     >
       <p>© {year} {site.name}. Alle rechten voorbehouden.</p>
+      <p>KvK: {site.kvk} · Btw: {site.btw}</p>
       <p>{site.tagline}</p>
     </div>
   </div>

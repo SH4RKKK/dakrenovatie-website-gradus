@@ -1,6 +1,6 @@
 // Shared front-end form helpers for the contact (QuoteForm) and review forms.
-// Submission is mailto-only for now; swap `openMailto` for a real endpoint later
-// and both forms switch over in one place.
+// Both forms POST JSON to a server API route (src/pages/api/*) which sends the
+// email over SMTP. submitForm is the single place that talks to the backend.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -8,13 +8,34 @@ export function isValidEmail(value: string): boolean {
   return EMAIL_RE.test(value);
 }
 
-// Build a mailto: link from a subject + body lines and navigate to it. Every
-// part is encodeURIComponent-encoded, so user input can't inject extra headers
-// (CC/BCC), break out of the body, or smuggle CRLF/`javascript:` payloads.
-export function openMailto(recipient: string, subject: string, bodyLines: string[]): void {
-  const s = encodeURIComponent(subject);
-  const b = encodeURIComponent(bodyLines.join("\n"));
-  window.location.href = `mailto:${recipient}?subject=${s}&body=${b}`;
+// POST a form payload as JSON to an API route. Resolves on success; throws an
+// Error whose message is a user-facing (Dutch) string on any failure, so callers
+// can show it directly in the form's error region.
+export async function submitForm(
+  endpoint: string,
+  payload: Record<string, unknown>
+): Promise<void> {
+  let res: Response;
+  try {
+    res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch {
+    throw new Error("Geen verbinding. Controleer uw internet en probeer het opnieuw.");
+  }
+
+  let body: { ok?: boolean; error?: string } | null = null;
+  try {
+    body = await res.json();
+  } catch {
+    /* non-JSON response */
+  }
+
+  if (!res.ok || !body?.ok) {
+    throw new Error(body?.error || "Versturen mislukt. Probeer het later opnieuw.");
+  }
 }
 
 // Show the single error region, mark the offending field invalid, wire up

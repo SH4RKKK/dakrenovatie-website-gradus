@@ -7,7 +7,12 @@ import { site } from "../data/site";
 const contactItems = [
   { icon: "phone", label: "Telefoon", value: site.phoneDisplay, href: `tel:${site.phone}` },
   { icon: "mail", label: "Email", value: site.email, href: `mailto:${site.email}` },
-  { icon: "pin", label: "Werkgebied", value: "Midden-Nederland", href: null },
+  {
+    icon: "pin",
+    label: "Adres",
+    value: `${site.address.street}, ${site.address.zip} ${site.address.city}`,
+    href: null,
+  },
 ];
 ---
 

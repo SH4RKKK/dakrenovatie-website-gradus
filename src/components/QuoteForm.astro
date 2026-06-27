@@ -1,5 +1,4 @@
 ---
-import { site } from "../data/site";
 import Icon from "./Icon.astro";
 ---
 
@@ -21,12 +20,7 @@ import Icon from "./Icon.astro";
           Laat uw gegevens achter en we nemen zo snel mogelijk contact met u op.
         </p>
 
-        <form
-          id="quote-form"
-          data-recipient={site.email}
-          class="mt-8 grid gap-5 sm:grid-cols-2"
-          novalidate
-        >
+        <form id="quote-form" class="mt-8 grid gap-5 sm:grid-cols-2" novalidate>
           <div>
             <label for="voornaam" class="mb-1.5 block text-sm font-semibold text-heading"
               >Voornaam</label
@@ -95,6 +89,14 @@ import Icon from "./Icon.astro";
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
             ></textarea>
           </div>
+          <input
+            type="text"
+            name="website"
+            tabindex="-1"
+            autocomplete="off"
+            class="hidden"
+            aria-hidden="true"
+          />
           <div class="sm:col-span-2">
             <button type="submit" class="btn-primary w-full sm:w-auto">Verstuur aanvraag</button>
             <p id="form-error" role="alert" class="mt-3 hidden text-sm text-red-600"></p>
@@ -106,15 +108,15 @@ import Icon from "./Icon.astro";
 </section>
 
 <script>
-  // Front-end only: build a mailto link from the form. Swap `openMailto` in
-  // src/scripts/forms.ts for a real backend/form endpoint later and both forms
-  // switch over in one place.
-  import { isValidEmail, openMailto, showFieldError, clearFieldErrors } from "../scripts/forms";
+  // Submits the quote form to /api/contact, which emails it over SMTP. Client
+  // validation mirrors the server's; the server validates again regardless.
+  import { isValidEmail, submitForm, showFieldError, clearFieldErrors } from "../scripts/forms";
 
   const form = document.getElementById("quote-form") as HTMLFormElement | null;
   const errEl = document.getElementById("form-error");
+  const btn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
 
-  form?.addEventListener("submit", (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = new FormData(form);
     const emailVal = String(data.get("email") ?? "").trim();
@@ -133,13 +135,33 @@ import Icon from "./Icon.astro";
       return;
     }
 
-    openMailto(form.dataset.recipient ?? "", "Offerteaanvraag via website", [
-      `Naam: ${data.get("voornaam") ?? ""} ${data.get("achternaam") ?? ""}`.trim(),
-      `Email: ${emailVal}`,
-      `Telefoon: ${data.get("telefoon") ?? ""}`,
-      `Postcode: ${postcode}`,
-      "",
-      `${data.get("bericht") ?? ""}`,
-    ]);
+    const label = btn?.textContent ?? "Verstuur aanvraag";
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Versturen...";
+    }
+
+    try {
+      await submitForm("/api/contact", {
+        voornaam: data.get("voornaam") ?? "",
+        achternaam: data.get("achternaam") ?? "",
+        email: emailVal,
+        telefoon: data.get("telefoon") ?? "",
+        postcode,
+        bericht: data.get("bericht") ?? "",
+        website: data.get("website") ?? "",
+      });
+      form.innerHTML =
+        '<div class="rounded-md bg-green-50 p-8 text-center"><p class="font-display text-lg font-bold text-heading">Bedankt voor uw aanvraag!</p><p class="mt-2 text-sm leading-relaxed">We hebben uw aanvraag ontvangen en nemen zo snel mogelijk contact met u op.</p></div>';
+    } catch (err) {
+      if (errEl) {
+        errEl.textContent = (err as Error).message;
+        errEl.classList.remove("hidden");
+      }
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = label;
+      }
+    }
   });
 </script>

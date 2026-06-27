@@ -4,12 +4,19 @@ export const site = {
   name: "Dakrenovatie Midden-Nederland",
   tagline: "Vernieuwing · Reparatie · Renovatie",
   slogan: "Uw Dak, Onze Zorg",
-  // PLACEHOLDERS, replace phone and email with the real details before launch.
-  phone: "0600000000",
-  phoneDisplay: "06 00 00 00 00 (voorbeeld)",
-  email: "voorbeeld@example.com",
+  phone: "0627205215",
+  phoneDisplay: "06 27 20 52 15",
+  // All form submissions (offerte + reviews) are sent to this address.
+  email: "administratie@dakrenovatiemn.nl",
   domain: "dakrenovatiemiddennederland.nl",
   logo: "/logo.jpg",
+  address: {
+    street: "Hoge engweg 4-8",
+    zip: "3882 TA",
+    city: "Putten",
+  },
+  kvk: "08139105",
+  btw: "NL002148495B83",
 };
 
 export const nav = [
