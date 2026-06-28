@@ -42,6 +42,7 @@ import Icon from "./Icon.astro";
           id="rev-naam"
           name="naam"
           type="text"
+          maxlength="120"
           class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
         />
       </div>
@@ -54,6 +55,7 @@ import Icon from "./Icon.astro";
           name="email"
           type="email"
           required
+          maxlength="150"
           class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
         />
       </div>
@@ -66,6 +68,7 @@ import Icon from "./Icon.astro";
           name="postcode"
           type="text"
           required
+          maxlength="16"
           class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
         />
       </div>
@@ -78,8 +81,12 @@ import Icon from "./Icon.astro";
           name="review"
           rows="4"
           required
+          maxlength="1000"
           class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
         ></textarea>
+        <p id="rev-bericht-count" class="mt-1 text-right text-xs text-body" aria-live="polite">
+          0 / 1000
+        </p>
       </div>
       <label class="flex items-start gap-3 text-sm text-heading">
         <input
@@ -116,8 +123,17 @@ import Icon from "./Icon.astro";
   const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
   const emailEl = document.getElementById("rev-email");
   const postcodeEl = document.getElementById("rev-postcode");
-  const reviewEl = document.getElementById("rev-bericht");
+  const reviewEl = document.getElementById("rev-bericht") as HTMLTextAreaElement | null;
   const fields = [emailEl, postcodeEl, reviewEl];
+
+  // Live character counter for the review box, driven by its own maxlength.
+  const reviewCount = document.getElementById("rev-bericht-count");
+  if (reviewEl && reviewCount) {
+    const max = reviewEl.maxLength;
+    const update = () => (reviewCount.textContent = `${reviewEl.value.length} / ${max}`);
+    reviewEl.addEventListener("input", update);
+    update();
+  }
 
   // Remember what opened the dialog so focus can return there on close (a11y).
   let lastFocused: HTMLElement | null = null;

@@ -9,18 +9,11 @@ import { rateLimit } from "../../lib/rate-limit";
 export const prerender = false;
 
 // Per-field maximum lengths (characters), enforced server-side.
-const LIMITS = { voornaam: 80, achternaam: 80, email: 150, telefoon: 40, postcode: 16, bericht: 5000 };
+const LIMITS = { voornaam: 80, achternaam: 80, email: 150, telefoon: 40, postcode: 16, bericht: 1000 };
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   // Block cross-site browser submissions.
   if (!sameOrigin(request)) return json({ ok: false, error: "Ongeldige herkomst." }, 403);
-
-  // Throttle abuse / inbox flooding (5 per 10 min per IP).
-  const rl = rateLimit(`contact:${clientAddress}`, 5, 10 * 60_000);
-  if (!rl.allowed)
-    return json({ ok: false, error: "Te veel aanvragen. Probeer het later opnieuw." }, 429, {
-      "Retry-After": String(rl.retryAfter),
-    });
 
   let body: Record<string, unknown>;
   try {
@@ -53,6 +46,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   const cfgErr = mailConfigError();
   if (cfgErr) return json({ ok: false, error: cfgErr }, 500);
+
+  // Throttle real send attempts only (10 per 10 min per IP), so failed
+  // validations or an unconfigured server never lock a legitimate user out.
+  const rl = rateLimit(`contact:${clientAddress}`, 10, 10 * 60_000);
+  if (!rl.allowed)
+    return json({ ok: false, error: "Te veel aanvragen. Probeer het later opnieuw." }, 429, {
+      "Retry-After": String(rl.retryAfter),
+    });
 
   const text = [
     "Nieuwe offerteaanvraag via de website",

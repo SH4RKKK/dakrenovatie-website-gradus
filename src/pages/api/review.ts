@@ -9,16 +9,10 @@ import { rateLimit } from "../../lib/rate-limit";
 
 export const prerender = false;
 
-const LIMITS = { naam: 120, email: 150, postcode: 16, review: 5000 };
+const LIMITS = { naam: 120, email: 150, postcode: 16, review: 1000 };
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!sameOrigin(request)) return json({ ok: false, error: "Ongeldige herkomst." }, 403);
-
-  const rl = rateLimit(`review:${clientAddress}`, 5, 10 * 60_000);
-  if (!rl.allowed)
-    return json({ ok: false, error: "Te veel aanvragen. Probeer het later opnieuw." }, 429, {
-      "Retry-After": String(rl.retryAfter),
-    });
 
   let body: Record<string, unknown>;
   try {
@@ -52,6 +46,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   const cfgErr = mailConfigError();
   if (cfgErr) return json({ ok: false, error: cfgErr }, 500);
+
+  // Throttle real send attempts only (10 per 10 min per IP), so failed
+  // validations or an unconfigured server never lock a legitimate user out.
+  const rl = rateLimit(`review:${clientAddress}`, 10, 10 * 60_000);
+  if (!rl.allowed)
+    return json({ ok: false, error: "Te veel aanvragen. Probeer het later opnieuw." }, 429, {
+      "Retry-After": String(rl.retryAfter),
+    });
 
   const record = {
     name: fields.naam,

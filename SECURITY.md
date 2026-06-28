@@ -13,9 +13,12 @@ The two form endpoints (`src/pages/api/contact.ts`, `src/pages/api/review.ts`) a
   from the request, so the endpoints cannot be used to email arbitrary third parties.
 - **Origin check.** Cross-site browser POSTs are rejected (`403`). Requests without an `Origin`
   header (curl, server-to-server) are allowed, since browsers always send `Origin` cross-site.
-- **Rate limiting.** 5 requests per 10 minutes per IP per endpoint (`429` + `Retry-After`).
-  In-memory and per-instance, see the note in `src/lib/rate-limit.ts` before scaling out.
-- **Input limits.** A 16 KB request-body cap (`413`) plus per-field max lengths (`400`).
+- **Rate limiting.** 10 send attempts per 10 minutes per IP per endpoint (`429` + `Retry-After`).
+  Only requests that pass validation and reach the send step count, so failed input or an
+  unconfigured server never locks out a legitimate user. In-memory and per-instance, see the
+  note in `src/lib/rate-limit.ts` before scaling out.
+- **Input limits.** A 16 KB request-body cap (`413`) plus per-field max lengths (`400`), with
+  matching client-side `maxlength` on every field.
 - **Server-side validation.** Email format and required fields are re-checked on the server,
   independent of the client.
 - **Plain-text email.** Submissions are sent as text (never HTML), and `replyTo` is the

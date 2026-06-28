@@ -29,6 +29,7 @@ import Icon from "./Icon.astro";
               id="voornaam"
               name="voornaam"
               type="text"
+              maxlength="80"
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
             />
           </div>
@@ -40,6 +41,7 @@ import Icon from "./Icon.astro";
               id="achternaam"
               name="achternaam"
               type="text"
+              maxlength="80"
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
             />
           </div>
@@ -52,6 +54,7 @@ import Icon from "./Icon.astro";
               name="email"
               type="email"
               required
+              maxlength="150"
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
             />
           </div>
@@ -63,6 +66,7 @@ import Icon from "./Icon.astro";
               id="telefoon"
               name="telefoon"
               type="tel"
+              maxlength="40"
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
             />
           </div>
@@ -75,6 +79,7 @@ import Icon from "./Icon.astro";
               name="postcode"
               type="text"
               required
+              maxlength="16"
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 aria-[invalid]:border-red-500"
             />
           </div>
@@ -86,8 +91,12 @@ import Icon from "./Icon.astro";
               id="bericht"
               name="bericht"
               rows="4"
+              maxlength="1000"
               class="w-full rounded-md border border-neutral-300 px-4 py-3 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
             ></textarea>
+            <p id="bericht-count" class="mt-1 text-right text-xs text-body" aria-live="polite">
+              0 / 1000
+            </p>
           </div>
           <input
             type="text"
@@ -115,6 +124,17 @@ import Icon from "./Icon.astro";
   const form = document.getElementById("quote-form") as HTMLFormElement | null;
   const errEl = document.getElementById("form-error");
   const btn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+
+  // Live character counter for the message box, driven by the textarea's own
+  // maxlength so the limit lives in one place (the markup).
+  const berichtEl = document.getElementById("bericht") as HTMLTextAreaElement | null;
+  const berichtCount = document.getElementById("bericht-count");
+  if (berichtEl && berichtCount) {
+    const max = berichtEl.maxLength;
+    const update = () => (berichtCount.textContent = `${berichtEl.value.length} / ${max}`);
+    berichtEl.addEventListener("input", update);
+    update();
+  }
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
