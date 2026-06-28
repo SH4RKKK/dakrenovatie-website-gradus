@@ -10,8 +10,28 @@ function trackErrors(page: Page): string[] {
   return errors;
 }
 
+// Every service slug from src/data/site.ts — each renders through the same
+// [slug].astro template, so testing all of them catches a broken slug/route.
+const SERVICE_SLUGS = [
+  "dak-renovatie",
+  "vervanging",
+  "dak-reparatie",
+  "dakpannen-reparatie",
+  "dakgoot",
+  "lekdetectie",
+  "stormschade-dakpannen",
+  "schoorsteen-reparatie",
+];
+
 test.describe("pages load and are JS-clean", () => {
-  for (const path of ["/", "/contact", "/diensten", "/diensten/dak-renovatie", "/beoordelingen"]) {
+  const paths = [
+    "/",
+    "/contact",
+    "/diensten",
+    "/beoordelingen",
+    ...SERVICE_SLUGS.map((s) => `/diensten/${s}`),
+  ];
+  for (const path of paths) {
     test(`loads ${path} without page errors`, async ({ page }) => {
       const errors = trackErrors(page);
       const res = await page.goto(path);
@@ -117,6 +137,25 @@ test.describe("quote form validation", () => {
     await expect(page.getByText("Vul uw postcode in.")).toBeVisible();
     await expect(page).toHaveURL(/\/contact\/?$/);
   });
+
+  test("submits a valid request and shows the thank-you message", async ({ page }) => {
+    // Stub the backend so the submit fires without sending real mail.
+    let posted: any = null;
+    await page.route("**/api/contact", async (route) => {
+      posted = route.request().postDataJSON();
+      await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
+    });
+
+    await page.goto("/contact");
+    await page.locator("#voornaam").fill("Jan");
+    await page.locator("#email").fill("klant@example.com");
+    await page.locator("#postcode").fill("1234 AB");
+    await page.getByRole("button", { name: "Verstuur aanvraag" }).click();
+
+    await expect(page.getByText("Bedankt voor uw aanvraag!")).toBeVisible();
+    expect(posted?.email).toBe("klant@example.com");
+    expect(posted?.postcode).toBe("1234 AB");
+  });
 });
 
 test.describe("review modal", () => {
@@ -136,6 +175,28 @@ test.describe("review modal", () => {
     await page.locator("#rev-email").fill("klant@example.com");
     await dialog.getByRole("button", { name: "Verstuur review" }).click();
     await expect(page.getByText("Vul uw postcode in.")).toBeVisible();
+  });
+
+  test("submits a valid review and shows the thank-you message", async ({ page }) => {
+    let posted: any = null;
+    await page.route("**/api/review", async (route) => {
+      posted = route.request().postDataJSON();
+      await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
+    });
+
+    await page.goto("/beoordelingen");
+    await page.getByRole("button", { name: "Schrijf een review" }).first().click();
+    const dialog = page.locator("#review-dialog");
+    await expect(dialog).toBeVisible();
+
+    await page.locator("#rev-email").fill("klant@example.com");
+    await page.locator("#rev-postcode").fill("1234 AB");
+    await page.locator("#rev-bericht").fill("Uitstekend werk aan ons dak.");
+    await dialog.getByRole("button", { name: "Verstuur review" }).click();
+
+    await expect(page.getByText("Bedankt voor uw review!")).toBeVisible();
+    expect(posted?.email).toBe("klant@example.com");
+    expect(posted?.review).toBe("Uitstekend werk aan ons dak.");
   });
 
   test("closes on Escape and returns focus to the trigger", async ({ page }) => {
