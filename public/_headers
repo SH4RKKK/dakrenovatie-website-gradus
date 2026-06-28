@@ -1,0 +1,10 @@
+# Security headers for static hosts that honor a _headers file (Netlify,
+# Cloudflare Pages). For a Node / standalone-adapter deployment these must be set
+# at the reverse proxy instead, see SECURITY.md. If you add third-party scripts,
+# embeds, or analytics, widen the Content-Security-Policy accordingly.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()

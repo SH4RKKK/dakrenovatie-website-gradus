@@ -31,6 +31,9 @@ function getTransporter(): Transporter {
       host: SMTP_HOST,
       port: SMTP_PORT,
       secure: SMTP_SECURE, // true for 465, false for 587 (STARTTLS)
+      // On STARTTLS ports, fail rather than silently send credentials in the
+      // clear if the server doesn't offer TLS. (465 is already implicit TLS.)
+      requireTLS: !SMTP_SECURE,
       auth: { user: SMTP_USER, pass: SMTP_PASS },
     });
   }
