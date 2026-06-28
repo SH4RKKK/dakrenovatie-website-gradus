@@ -2,12 +2,14 @@
 import Layout from "../layouts/Layout.astro";
 import ReviewModal from "../components/ReviewModal.astro";
 import CostCta from "../components/CostCta.astro";
+import { Image } from "astro:assets";
 import { site } from "../data/site";
 import { publicReviews } from "../data/reviews";
 
-// Decorative imagery to fill out the page; the owner curates these later.
-// Match image files only so the folder's README.md isn't picked up as an image.
-const pageImageModules = import.meta.glob<string>(
+// Decorative imagery to fill out the page. Drop new photos into
+// resources/page-images/ and rebuild; they appear here automatically (optimized
+// to WebP by Astro). Match image files only so the folder's README is skipped.
+const pageImageModules = import.meta.glob<ImageMetadata>(
   "/resources/page-images/*.{jpg,jpeg,png,webp,avif,gif,svg}",
   { eager: true, import: "default" }
 );
@@ -74,10 +76,12 @@ const INITIAL = 6; // cards shown before scroll-loading kicks in
       <section class="bg-neutral-50 py-16">
         <div class="container-x">
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {pageImages.map((src) => (
-              <img
-                src={src}
+            {pageImages.map((img) => (
+              <Image
+                src={img}
                 alt=""
+                widths={[400, 700]}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 loading="lazy"
                 class="h-56 w-full rounded-xl object-cover shadow-sm"
               />

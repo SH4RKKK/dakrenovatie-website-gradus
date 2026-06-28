@@ -1,5 +1,6 @@
 ---
-import RoofPanel from "./RoofPanel.astro";
+import { Image } from "astro:assets";
+import teamPhoto from "../assets/photos/team-aan-het-werk.jpeg";
 import { withBase } from "../lib/paths";
 ---
 
@@ -25,7 +26,12 @@ import { withBase } from "../lib/paths";
       <a href={withBase("/contact")} class="btn-primary mt-8">Offerte aanvragen</a>
     </div>
 
-    <!-- Branded panel, replace with a real project photo later. -->
-    <RoofPanel icon="users" label="Een toegewijd team" class="aspect-[4/3]" />
+    <Image
+      src={teamPhoto}
+      alt="Onze dakdekker vakkundig aan het werk op een dak"
+      widths={[480, 768, 1100]}
+      sizes="(min-width: 1024px) 45vw, 100vw"
+      class="aspect-[4/3] w-full rounded-2xl object-cover shadow-card"
+    />
   </div>
 </section>

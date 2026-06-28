@@ -1,7 +1,8 @@
 ---
 import { site } from "../data/site";
 import Icon from "./Icon.astro";
-import RoofPanel from "./RoofPanel.astro";
+import { Image } from "astro:assets";
+import heroPhoto from "../assets/photos/hero-dak.jpeg";
 import { withBase } from "../lib/paths";
 
 const trust = [
@@ -47,9 +48,14 @@ const trust = [
       </ul>
     </div>
 
-    <!-- Branded visual panel, replace with real roof photography later. -->
     <div class="relative">
-      <RoofPanel icon="layers" label="Uw dak in vertrouwde handen" class="aspect-[4/3]" />
+      <Image
+        src={heroPhoto}
+        alt="Vakkundig gerenoveerd dak met opnieuw gevoegde nok"
+        widths={[480, 768, 1100]}
+        sizes="(min-width: 1024px) 45vw, 100vw"
+        class="aspect-[4/3] w-full rounded-2xl object-cover shadow-card"
+      />
       <div
         class="absolute -bottom-6 -left-6 flex items-end gap-2 rounded-xl bg-spark px-6 py-4 text-ink shadow-lg"
       >
