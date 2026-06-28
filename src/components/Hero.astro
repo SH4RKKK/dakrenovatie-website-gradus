@@ -2,6 +2,7 @@
 import { site } from "../data/site";
 import Icon from "./Icon.astro";
 import RoofPanel from "./RoofPanel.astro";
+import { withBase } from "../lib/paths";
 
 const trust = [
   "Gratis inspectie",
@@ -27,7 +28,7 @@ const trust = [
         comfort biedt, jaar in, jaar uit.
       </p>
       <div class="mt-8 flex flex-wrap gap-4">
-        <a href="/contact" class="btn-primary">Offerte aanvragen</a>
+        <a href={withBase("/contact")} class="btn-primary">Offerte aanvragen</a>
         <a href={`tel:${site.phone}`} class="btn-ghost">
           <Icon name="phone" size={18} /> Bel direct
         </a>

@@ -7,7 +7,9 @@ import { json, str, sameOrigin, readJson, withinLimits } from "../../lib/http";
 import { isValidEmail } from "../../scripts/forms";
 import { rateLimit } from "../../lib/rate-limit";
 
-export const prerender = false;
+// On-demand in the normal build; in the static build there is no server, so this
+// route is prerendered away (it emits nothing and the form is disabled client-side).
+export const prerender = import.meta.env.STATIC_BUILD;
 
 const LIMITS = { naam: 120, email: 150, postcode: 16, review: 1000 };
 

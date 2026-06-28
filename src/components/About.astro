@@ -1,5 +1,6 @@
 ---
 import RoofPanel from "./RoofPanel.astro";
+import { withBase } from "../lib/paths";
 ---
 
 <section id="over-ons" class="py-20">
@@ -21,7 +22,7 @@ import RoofPanel from "./RoofPanel.astro";
         bieden een breed scala aan dakpannen van gerenommeerde fabrikanten, zodat u kunt
         kiezen uit verschillende stijlen en kleuren die bij uw project passen.
       </p>
-      <a href="/contact" class="btn-primary mt-8">Offerte aanvragen</a>
+      <a href={withBase("/contact")} class="btn-primary mt-8">Offerte aanvragen</a>
     </div>
 
     <!-- Branded panel, replace with a real project photo later. -->

@@ -15,6 +15,11 @@ export async function submitForm(
   endpoint: string,
   payload: Record<string, unknown>
 ): Promise<void> {
+  // Static preview build has no backend; explain that instead of failing on a 404.
+  if (import.meta.env.STATIC_BUILD) {
+    throw new Error("Versturen is uitgeschakeld in deze preview.");
+  }
+
   let res: Response;
   try {
     res = await fetch(endpoint, {

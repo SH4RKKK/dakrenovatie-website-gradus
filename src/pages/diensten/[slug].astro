@@ -5,6 +5,7 @@ import CostCta from "../../components/CostCta.astro";
 import Icon from "../../components/Icon.astro";
 import RoofPanel from "../../components/RoofPanel.astro";
 import { site, services } from "../../data/site";
+import { withBase } from "../../lib/paths";
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -29,7 +30,7 @@ const { service } = Astro.props;
         <h1 class="mt-4 text-4xl sm:text-5xl">{service.headline}</h1>
         <p class="mt-6 max-w-md text-lg leading-relaxed">{service.intro}</p>
         <div class="mt-8 flex flex-wrap gap-4">
-          <a href="/contact" class="btn-primary">Offerte aanvragen</a>
+          <a href={withBase("/contact")} class="btn-primary">Offerte aanvragen</a>
           <a href={`tel:${site.phone}`} class="btn-ghost">
             <Icon name="phone" size={18} /> Bel direct
           </a>

@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import Icon from "../components/Icon.astro";
 import { site } from "../data/site";
+import { withBase } from "../lib/paths";
 
 interface Props {
   title?: string;
@@ -22,7 +23,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="icon" type="image/jpeg" href={site.logo} />
+    <link rel="icon" type="image/jpeg" href={withBase(site.logo)} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

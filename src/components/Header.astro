@@ -1,8 +1,12 @@
 ---
 import { site, services } from "../data/site";
 import Icon from "./Icon.astro";
+import { withBase } from "../lib/paths";
 
-const path = Astro.url.pathname;
+// Compare against the path with any base prefix stripped, so active-state logic
+// works the same in the normal build (base "/") and the static build (base "/<repo>/").
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const path = Astro.url.pathname.slice(base.length) || "/";
 const isActive = (href: string) =>
   href === "/" ? path === "/" : path.startsWith(href);
 ---
@@ -12,14 +16,14 @@ const isActive = (href: string) =>
 >
   <div class="container-x flex h-20 items-center justify-between gap-4">
     <!-- Logo -->
-    <a href="/" class="flex shrink-0 items-center" aria-label={site.name}>
-      <img src={site.logo} alt={site.name} class="h-12 w-auto md:h-14" />
+    <a href={withBase("/")} class="flex shrink-0 items-center" aria-label={site.name}>
+      <img src={withBase(site.logo)} alt={site.name} class="h-12 w-auto md:h-14" />
     </a>
 
     <!-- Desktop nav -->
     <nav class="hidden items-center gap-8 lg:flex" aria-label="Hoofdmenu">
       <a
-        href="/"
+        href={withBase("/")}
         class:list={[
           "font-display text-sm font-bold uppercase tracking-wide transition hover:text-accent",
           isActive("/") ? "text-accent" : "text-heading",
@@ -29,7 +33,7 @@ const isActive = (href: string) =>
       <!-- Diensten dropdown -->
       <div class="group relative">
         <a
-          href="/diensten"
+          href={withBase("/diensten")}
           class:list={[
             "flex items-center gap-1 font-display text-sm font-bold uppercase tracking-wide transition hover:text-accent",
             path.startsWith("/diensten") ? "text-accent" : "text-heading",
@@ -46,7 +50,7 @@ const isActive = (href: string) =>
               services.map((s) => (
                 <li>
                   <a
-                    href={`/diensten/${s.slug}`}
+                    href={withBase(`/diensten/${s.slug}`)}
                     class="block px-5 py-2.5 text-sm text-heading transition hover:bg-accent hover:text-white"
                   >
                     {s.title}
@@ -59,7 +63,7 @@ const isActive = (href: string) =>
       </div>
 
       <a
-        href="/beoordelingen"
+        href={withBase("/beoordelingen")}
         class:list={[
           "font-display text-sm font-bold uppercase tracking-wide transition hover:text-accent",
           isActive("/beoordelingen") ? "text-accent" : "text-heading",
@@ -67,7 +71,7 @@ const isActive = (href: string) =>
       >
 
       <a
-        href="/contact"
+        href={withBase("/contact")}
         class:list={[
           "font-display text-sm font-bold uppercase tracking-wide transition hover:text-accent",
           isActive("/contact") ? "text-accent" : "text-heading",
@@ -76,7 +80,7 @@ const isActive = (href: string) =>
     </nav>
 
     <div class="flex items-center gap-3">
-      <a href="/contact" class="btn-primary hidden lg:inline-flex">Offerte aanvragen</a>
+      <a href={withBase("/contact")} class="btn-primary hidden lg:inline-flex">Offerte aanvragen</a>
 
       <!-- Mobile hamburger -->
       <button
@@ -114,7 +118,7 @@ const isActive = (href: string) =>
     </div>
 
     <nav class="flex-1 overflow-y-auto py-2" aria-label="Mobiel menu">
-      <a href="/" class="block px-6 py-3.5 font-display font-semibold hover:bg-white/5"
+      <a href={withBase("/")} class="block px-6 py-3.5 font-display font-semibold hover:bg-white/5"
         >Home</a
       >
       <button
@@ -131,7 +135,7 @@ const isActive = (href: string) =>
           services.map((s) => (
             <li>
               <a
-                href={`/diensten/${s.slug}`}
+                href={withBase(`/diensten/${s.slug}`)}
                 class="block py-2.5 pl-10 pr-6 text-sm text-white/80 hover:text-white"
               >
                 {s.title}
@@ -141,17 +145,17 @@ const isActive = (href: string) =>
         }
       </ul>
       <a
-        href="/beoordelingen"
+        href={withBase("/beoordelingen")}
         class="block px-6 py-3.5 font-display font-semibold hover:bg-white/5">Beoordelingen</a
       >
       <a
-        href="/contact"
+        href={withBase("/contact")}
         class="block px-6 py-3.5 font-display font-semibold hover:bg-white/5">Contact</a
       >
     </nav>
 
     <div class="border-t border-white/10 p-6">
-      <a href="/contact" class="btn-primary w-full">Offerte aanvragen</a>
+      <a href={withBase("/contact")} class="btn-primary w-full">Offerte aanvragen</a>
       <a
         href={`tel:${site.phone}`}
         class="mt-3 flex items-center justify-center gap-2 text-sm text-white/80"
