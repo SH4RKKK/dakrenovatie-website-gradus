@@ -43,6 +43,9 @@ resources/reviews/*
 resources/reviews/text/*
 !resources/reviews/text/README.md
 
+# design reference screenshots (kept locally, not tracked/shipped)
+example_page/
+
 # personal notes / scratch
 todo.txt
 
