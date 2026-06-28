@@ -36,8 +36,11 @@ test.describe("pages load and are JS-clean", () => {
       const errors = trackErrors(page);
       const res = await page.goto(path);
       expect(res?.status(), `status for ${path}`).toBeLessThan(400);
-      await expect(page.locator("header")).toBeVisible();
-      await expect(page.locator("footer")).toBeVisible();
+      // Scope to the site's own chrome: Playwright's CSS engine pierces shadow
+      // DOM, so a bare "header"/"footer" also matches the Astro dev toolbar's
+      // injected elements (dev-only). These classes are unique to our layout.
+      await expect(page.locator("header.sticky")).toBeVisible();
+      await expect(page.locator("footer.bg-ink")).toBeVisible();
       expect(errors, `page errors on ${path}`).toEqual([]);
     });
   }
