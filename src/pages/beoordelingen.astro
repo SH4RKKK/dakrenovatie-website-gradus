@@ -75,11 +75,18 @@ const INITIAL = 6; // cards shown before scroll-loading kicks in
     pageImages.length > 0 && (
       <section class="bg-neutral-50 py-16">
         <div class="container-x">
-          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="eyebrow">Ons werk</p>
+            <h2 class="mt-4 text-3xl sm:text-4xl">Een impressie van onze projecten</h2>
+            <p class="mt-4 leading-relaxed">
+              Een greep uit recent uitgevoerd dakwerk in Midden-Nederland.
+            </p>
+          </div>
+          <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {pageImages.map((img) => (
               <Image
                 src={img}
-                alt=""
+                alt="Door ons uitgevoerd dakwerk"
                 widths={[400, 700]}
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 loading="lazy"
