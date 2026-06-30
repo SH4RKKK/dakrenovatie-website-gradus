@@ -13,10 +13,15 @@ The two form endpoints (`src/pages/api/contact.ts`, `src/pages/api/review.ts`) a
   from the request, so the endpoints cannot be used to email arbitrary third parties.
 - **Origin check.** Cross-site browser POSTs are rejected (`403`). Requests without an `Origin`
   header (curl, server-to-server) are allowed, since browsers always send `Origin` cross-site.
-- **Rate limiting.** 10 send attempts per 10 minutes per IP per endpoint (`429` + `Retry-After`).
-  Only requests that pass validation and reach the send step count, so failed input or an
-  unconfigured server never locks out a legitimate user. In-memory and per-instance, see the
-  note in `src/lib/rate-limit.ts` before scaling out.
+- **Rate limiting (token bucket, two layers).** `src/lib/rate-limit.ts` enforces a **global**
+  send ceiling shared by both endpoints (default ~12 sends/hour sustained, burst 20, well under a
+  typical provider's daily quota) **plus** a strict **1 send per minute per IP** per endpoint
+  (`429` + `Retry-After`). Only requests that pass validation and reach the send step consume a
+  token, so failed input never locks out a legitimate user. The global bucket is the spoof-proof
+  backstop: it caps total outbound mail even if the per-IP key is forged (see the proxy note
+  below). In-memory and per-instance; move to a shared store (Redis/KV) before scaling out.
+- **SMTP timeouts.** `mailer.ts` sets `connectionTimeout`/`greetingTimeout`/`socketTimeout` so a
+  slow or hung mail server cannot hold a request (and its socket) open indefinitely.
 - **Input limits.** A 16 KB request-body cap (`413`) plus per-field max lengths (`400`), with
   matching client-side `maxlength` on every field.
 - **Server-side validation.** Email format and required fields are re-checked on the server,
@@ -38,12 +43,27 @@ Node standalone server, so if you deploy that way, set the same headers at your 
 Example for nginx:
 
 ```nginx
+server_tokens off;            # hide nginx version
+client_max_body_size 16k;     # mirror the app's request-body cap, blocks large-body DoS at the edge
 add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" always;
 add_header X-Frame-Options "DENY" always;
 add_header X-Content-Type-Options "nosniff" always;
 add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
 ```
+
+**TLS / HTTPS.** The static preview (GitHub Pages) is already served over HTTPS by the host.
+The **Node standalone server is plain HTTP on its own** — it must run behind a TLS-terminating
+reverse proxy (or a host that provides TLS). Do not expose the bare Node port to the internet.
+Redirect HTTP→HTTPS and send the `Strict-Transport-Security` header shown above.
+
+**Client IP / `X-Forwarded-For`.** The per-IP rate limit uses the platform-reported client IP,
+which Astro derives from `X-Forwarded-For` when present. A direct-to-internet Node server (or a
+misconfigured proxy) therefore lets a client forge that header and rotate the per-IP key. The
+reverse proxy **must strip any inbound `X-Forwarded-For` and set its own** (single trusted hop),
+e.g. nginx `proxy_set_header X-Forwarded-For $remote_addr;`. The global send bucket caps total
+mail regardless, but fixing the proxy restores the per-IP limit's value.
 
 The CSP uses `'unsafe-inline'` for `script-src` because Astro inlines small component
 scripts (the menu, carousel, and form handlers) directly into the HTML, so a strict

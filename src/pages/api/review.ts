@@ -5,7 +5,7 @@ import type { APIRoute } from "astro";
 import { sendMail, mailConfigError } from "../../lib/mailer";
 import { json, str, sameOrigin, readJson, withinLimits } from "../../lib/http";
 import { isValidEmail } from "../../scripts/forms";
-import { rateLimit } from "../../lib/rate-limit";
+import { mailRateLimit } from "../../lib/rate-limit";
 
 // On-demand in the normal build; in the static build there is no server, so this
 // route is prerendered away (it emits nothing and the form is disabled client-side).
@@ -47,11 +47,18 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!fields.review) return json({ ok: false, error: "Schrijf uw beoordeling." }, 400);
 
   const cfgErr = mailConfigError();
-  if (cfgErr) return json({ ok: false, error: cfgErr }, 500);
+  if (cfgErr) {
+    // Log the specific missing config server-side; tell the client only a generic
+    // message so an unconfigured deployment doesn't leak which secrets are unset.
+    console.error("Mail niet geconfigureerd:", cfgErr);
+    return json({ ok: false, error: "Versturen is tijdelijk niet beschikbaar." }, 503);
+  }
 
-  // Throttle real send attempts only (10 per 10 min per IP), so failed
-  // validations or an unconfigured server never lock a legitimate user out.
-  const rl = rateLimit(`review:${clientAddress}`, 10, 10 * 60_000);
+  // Throttle real send attempts only (a global send ceiling + 1 per minute per
+  // IP), so failed validations or an unconfigured server never lock a
+  // legitimate user out. The global bucket caps total outbound mail even if the
+  // per-IP key is spoofed.
+  const rl = mailRateLimit("review", clientAddress);
   if (!rl.allowed)
     return json({ ok: false, error: "Te veel aanvragen. Probeer het later opnieuw." }, 429, {
       "Retry-After": String(rl.retryAfter),

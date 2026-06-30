@@ -35,6 +35,11 @@ function getTransporter(): Transporter {
       // clear if the server doesn't offer TLS. (465 is already implicit TLS.)
       requireTLS: !SMTP_SECURE,
       auth: { user: SMTP_USER, pass: SMTP_PASS },
+      // Bound how long a slow/hung SMTP server can hold the request (and its
+      // socket) open, so a misbehaving upstream can't pile up pending sends.
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
     });
   }
   return transporter;
