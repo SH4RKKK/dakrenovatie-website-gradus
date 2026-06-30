@@ -29,6 +29,7 @@ test.describe("pages load and are JS-clean", () => {
     "/contact",
     "/diensten",
     "/beoordelingen",
+    "/privacyverklaring",
     ...SERVICE_SLUGS.map((s) => `/diensten/${s}`),
   ];
   for (const path of paths) {
@@ -167,16 +168,16 @@ test.describe("review modal", () => {
     const dialog = page.locator("#review-dialog");
     await expect(dialog).toBeHidden();
 
-    await page.getByRole("button", { name: "Schrijf een review" }).click();
+    await page.getByRole("button", { name: "Schrijf een recensie" }).click();
     await expect(dialog).toBeVisible();
 
     // Empty submit surfaces the email error first.
-    await dialog.getByRole("button", { name: "Verstuur review" }).click();
+    await dialog.getByRole("button", { name: "Verstuur recensie" }).click();
     await expect(page.getByText("Vul een geldig e-mailadres in.")).toBeVisible();
 
     // With a valid email but no postcode, the postcode error shows.
     await page.locator("#rev-email").fill("klant@example.com");
-    await dialog.getByRole("button", { name: "Verstuur review" }).click();
+    await dialog.getByRole("button", { name: "Verstuur recensie" }).click();
     await expect(page.getByText("Vul uw postcode in.")).toBeVisible();
   });
 
@@ -188,23 +189,23 @@ test.describe("review modal", () => {
     });
 
     await page.goto("/beoordelingen");
-    await page.getByRole("button", { name: "Schrijf een review" }).first().click();
+    await page.getByRole("button", { name: "Schrijf een recensie" }).first().click();
     const dialog = page.locator("#review-dialog");
     await expect(dialog).toBeVisible();
 
     await page.locator("#rev-email").fill("klant@example.com");
     await page.locator("#rev-postcode").fill("1234 AB");
     await page.locator("#rev-bericht").fill("Uitstekend werk aan ons dak.");
-    await dialog.getByRole("button", { name: "Verstuur review" }).click();
+    await dialog.getByRole("button", { name: "Verstuur recensie" }).click();
 
-    await expect(page.getByText("Bedankt voor uw review!")).toBeVisible();
+    await expect(page.getByText("Bedankt voor uw recensie!")).toBeVisible();
     expect(posted?.email).toBe("klant@example.com");
     expect(posted?.review).toBe("Uitstekend werk aan ons dak.");
   });
 
   test("closes on Escape and returns focus to the trigger", async ({ page }) => {
     await page.goto("/beoordelingen");
-    const trigger = page.getByRole("button", { name: "Schrijf een review" }).first();
+    const trigger = page.getByRole("button", { name: "Schrijf een recensie" }).first();
     await trigger.click();
     const dialog = page.locator("#review-dialog");
     await expect(dialog).toBeVisible();

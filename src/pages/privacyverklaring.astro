@@ -1,0 +1,203 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site } from "../data/site";
+import { withBase } from "../lib/paths";
+---
+
+<Layout
+  title={`Privacyverklaring, ${site.name}`}
+  description="Privacyverklaring van Dakrenovatie Midden-Nederland: welke persoonsgegevens we verwerken via onze formulieren, waarom, hoe lang we ze bewaren en welke rechten u heeft."
+>
+  <!-- Page header -->
+  <section class="bg-ink py-16 text-white">
+    <div class="container-x text-center">
+      <p class="eyebrow">Privacy</p>
+      <h1 class="mt-4 text-4xl text-white sm:text-5xl">Privacyverklaring</h1>
+      <p class="mx-auto mt-4 max-w-xl text-white/70">
+        Dakrenovatie Midden-Nederland hecht veel waarde aan de bescherming van uw
+        persoonsgegevens. Hieronder leest u welke gegevens we verwerken, waarom, en
+        welke rechten u heeft.
+      </p>
+    </div>
+  </section>
+
+  <!-- Policy content -->
+  <section class="py-16">
+    <div class="legal container-x max-w-3xl">
+      <h2>Verwerkingsverantwoordelijke</h2>
+      <p>
+        De verantwoordelijke voor de verwerking van uw persoonsgegevens is:
+      </p>
+      <p>
+        <strong>{site.name}</strong><br />
+        {site.address.street}, {site.address.zip} {site.address.city}<br />
+        E-mail: <a href={`mailto:${site.email}`}>{site.email}</a><br />
+        Telefoon: <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a><br />
+        KvK: {site.kvk}<br />
+        Btw: {site.btw}
+      </p>
+
+      <h2>Welke gegevens wij verwerken</h2>
+      <p>
+        We verwerken alleen de gegevens die u zelf aan ons verstrekt via de
+        formulieren op deze website.
+      </p>
+      <h3>Offerte- en contactformulier</h3>
+      <ul>
+        <li>Voor- en achternaam (optioneel)</li>
+        <li>E-mailadres (verplicht)</li>
+        <li>Telefoonnummer (optioneel)</li>
+        <li>Postcode (verplicht)</li>
+        <li>Uw bericht (optioneel)</li>
+      </ul>
+      <h3>Recensieformulier</h3>
+      <ul>
+        <li>Naam (optioneel)</li>
+        <li>E-mailadres (verplicht)</li>
+        <li>Postcode (verplicht)</li>
+        <li>Uw beoordeling (verplicht)</li>
+      </ul>
+
+      <h2>Doeleinden en grondslag</h2>
+      <p>We gebruiken uw gegevens uitsluitend voor:</p>
+      <ul>
+        <li>
+          het beantwoorden van uw vraag en het opstellen van een offerte
+          (offerte- en contactformulier);
+        </li>
+        <li>
+          het beoordelen en, na uw toestemming, publiceren van uw recensie
+          (recensieformulier).
+        </li>
+      </ul>
+      <p>De wettelijke grondslagen hiervoor (AVG, artikel 6) zijn:</p>
+      <ul>
+        <li>
+          de uitvoering van een overeenkomst of het nemen van precontractuele
+          maatregelen op uw verzoek, bij een offerte- of contactaanvraag;
+        </li>
+        <li>
+          uw toestemming, bij het plaatsen van een recensie. U kunt deze toestemming
+          op elk moment intrekken.
+        </li>
+      </ul>
+
+      <h2>Bewaartermijn</h2>
+      <p>
+        We bewaren uw gegevens niet langer dan nodig is voor het doel waarvoor ze
+        zijn verzameld. Offerte- en contactaanvragen bewaren we zolang dat nodig is
+        om uw aanvraag af te handelen en eventueel contact met u te onderhouden.
+        Gepubliceerde recensies blijven bewaard totdat u of wij ze verwijderen.
+      </p>
+
+      <h2>Delen met derden</h2>
+      <p>
+        We verkopen uw gegevens niet en delen ze niet voor reclame of analyse. Uw
+        bericht wordt per e-mail naar ons verzonden en alleen gebruikt om uw vraag te
+        beantwoorden. Deze website gebruikt geen tracking, geen cookies en geen
+        analysesoftware, en laadt de lettertypen vanaf onze eigen server.
+      </p>
+
+      <h2>Cookies</h2>
+      <p>Deze website plaatst geen tracking- of analysecookies.</p>
+
+      <h2>Beveiliging</h2>
+      <p>
+        We nemen passende technische en organisatorische maatregelen om uw gegevens
+        te beschermen. Formulierinzendingen worden via een versleutelde verbinding
+        (TLS) verzonden. Bij recensies worden uw e-mailadres en postcode nooit openbaar
+        gemaakt; alleen uw naam (of "Anonieme klant") en uw beoordeling worden
+        getoond. Ter bescherming tegen misbruik en spam verwerken we tijdelijk uw
+        IP-adres. Dit gebruiken we enkel om het aantal aanvragen te beperken en het
+        wordt na korte tijd automatisch gewist.
+      </p>
+
+      <h2>Uw rechten</h2>
+      <p>U heeft het recht om:</p>
+      <ul>
+        <li>uw gegevens in te zien;</li>
+        <li>uw gegevens te laten corrigeren;</li>
+        <li>uw gegevens te laten verwijderen;</li>
+        <li>de verwerking te laten beperken;</li>
+        <li>bezwaar te maken tegen de verwerking;</li>
+        <li>uw gegevens over te laten dragen (dataportabiliteit);</li>
+        <li>een eerder gegeven toestemming in te trekken.</li>
+      </ul>
+      <p>
+        Wilt u van een van deze rechten gebruikmaken? Stuur dan een e-mail naar
+        <a href={`mailto:${site.email}`}>{site.email}</a>. We reageren zo snel
+        mogelijk.
+      </p>
+
+      <h2>Klacht indienen</h2>
+      <p>
+        Bent u het niet eens met hoe wij met uw gegevens omgaan? Dan heeft u het recht
+        om een klacht in te dienen bij de Autoriteit Persoonsgegevens via
+        <a
+          href="https://www.autoriteitpersoonsgegevens.nl"
+          target="_blank"
+          rel="noopener noreferrer">autoriteitpersoonsgegevens.nl</a
+        >.
+      </p>
+
+      <h2>Wijzigingen</h2>
+      <p>
+        We kunnen deze privacyverklaring van tijd tot tijd aanpassen. De meest recente
+        versie staat altijd op deze pagina.
+      </p>
+      <p>Laatst bijgewerkt: 30 juni 2026.</p>
+
+      <p class="mt-10">
+        Heeft u vragen over deze privacyverklaring? <a href={withBase("/contact")}
+          >Neem gerust contact met ons op.</a
+        >
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* Long-form legal text. The project has no typography plugin, so the document
+     styling lives here (scoped to this page). Headings already inherit the
+     display font / color from global.css base styles; we only set rhythm + size. */
+  .legal {
+    color: var(--color-body);
+  }
+  .legal h2 {
+    font-size: 1.5rem;
+    margin-top: 2.75rem;
+    margin-bottom: 0.85rem;
+  }
+  .legal h2:first-child {
+    margin-top: 0;
+  }
+  .legal h3 {
+    font-size: 1.15rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.6rem;
+  }
+  .legal p {
+    margin-bottom: 1rem;
+    line-height: 1.75;
+  }
+  .legal ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .legal li {
+    margin-bottom: 0.4rem;
+    line-height: 1.65;
+  }
+  .legal a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .legal a:hover {
+    color: var(--color-accent-600);
+  }
+  .legal strong {
+    color: var(--color-heading);
+  }
+</style>

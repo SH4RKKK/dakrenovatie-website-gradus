@@ -45,10 +45,12 @@ type MailInput = {
   text: string;
   // Visitor's address, so the owner can reply straight to them.
   replyTo?: string;
+  // Optional file attachments, e.g. a recensie as a ready-to-save .json file.
+  attachments?: { filename: string; content: string; contentType?: string }[];
 };
 
-export async function sendMail({ subject, text, replyTo }: MailInput): Promise<void> {
+export async function sendMail({ subject, text, replyTo, attachments }: MailInput): Promise<void> {
   const to = MAIL_TO || site.email;
   const from = MAIL_FROM || `"${site.name}" <${SMTP_USER}>`;
-  await getTransporter().sendMail({ from, to, subject, text, replyTo });
+  await getTransporter().sendMail({ from, to, subject, text, replyTo, attachments });
 }

@@ -74,7 +74,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const filename = `${date || "datum"}-${slug}.json`;
 
   const text = [
-    "Nieuwe review via de website",
+    "Nieuwe recensie via de website",
     "",
     `Naam: ${fields.naam || "(leeg)"}`,
     `Email: ${fields.email}`,
@@ -84,14 +84,18 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     "Beoordeling:",
     fields.review,
     "",
-    `--- JSON (sla op als ${filename} in resources/reviews/text om goed te keuren) ---`,
-    jsonBlock,
+    `De recensie is bijgevoegd als ${filename}. Sla dit bestand op in resources/reviews/text om de recensie goed te keuren.`,
   ].join("\n");
 
   try {
-    await sendMail({ subject: "Nieuwe review via de website", text, replyTo: fields.email });
+    await sendMail({
+      subject: "Nieuwe recensie via de website",
+      text,
+      replyTo: fields.email,
+      attachments: [{ filename, content: jsonBlock, contentType: "application/json" }],
+    });
   } catch (err) {
-    console.error("Review mail mislukt:", err);
+    console.error("Recensie mail mislukt:", err);
     return json({ ok: false, error: "Versturen mislukt. Probeer het later opnieuw." }, 502);
   }
 

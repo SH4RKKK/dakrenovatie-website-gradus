@@ -26,6 +26,7 @@ const year = new Date().getFullYear();
         <li><a href={withBase("/diensten")} class="transition hover:text-accent">Diensten</a></li>
         <li><a href={withBase("/beoordelingen")} class="transition hover:text-accent">Beoordelingen</a></li>
         <li><a href={withBase("/contact")} class="transition hover:text-accent">Contact</a></li>
+        <li><a href={withBase("/privacyverklaring")} class="transition hover:text-accent">Privacyverklaring</a></li>
       </ul>
     </div>
 
@@ -85,7 +86,12 @@ const year = new Date().getFullYear();
       class="container-x flex flex-col items-center justify-between gap-2 py-6 text-xs sm:flex-row"
     >
       <p>© {year} {site.name}. Alle rechten voorbehouden.</p>
-      <p>KvK: {site.kvk} · Btw: {site.btw}</p>
+      <p>
+        KvK: {site.kvk} · Btw: {site.btw} ·
+        <a href={withBase("/privacyverklaring")} class="transition hover:text-accent"
+          >Privacyverklaring</a
+        >
+      </p>
       <p>{site.tagline}</p>
     </div>
   </div>

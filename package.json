@@ -16,6 +16,8 @@
     "nodemailer": "^6.10.1"
   },
   "devDependencies": {
+    "@fontsource/montserrat": "^5.2.8",
+    "@fontsource/open-sans": "^5.2.7",
     "@playwright/test": "^1.52.0",
     "@tailwindcss/vite": "^4.1.4",
     "@types/nodemailer": "^6.4.24",
