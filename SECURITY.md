@@ -14,8 +14,8 @@ The two form endpoints (`src/pages/api/contact.ts`, `src/pages/api/review.ts`) a
 - **Origin check.** Cross-site browser POSTs are rejected (`403`). Requests without an `Origin`
   header (curl, server-to-server) are allowed, since browsers always send `Origin` cross-site.
 - **Rate limiting (token bucket, two layers).** `src/lib/rate-limit.ts` enforces a **global**
-  send ceiling shared by both endpoints (default ~12 sends/hour sustained, burst 20, well under a
-  typical provider's daily quota) **plus** a strict **1 send per minute per IP** per endpoint
+  send ceiling shared by both endpoints (default ~20 sends/hour sustained, burst 30, ~480/day,
+  under a Gmail-free quota) **plus** a per-IP limit of **3 sends per 5 minutes per IP** per endpoint
   (`429` + `Retry-After`). Only requests that pass validation and reach the send step consume a
   token, so failed input never locks out a legitimate user. The global bucket is the spoof-proof
   backstop: it caps total outbound mail even if the per-IP key is forged (see the proxy note

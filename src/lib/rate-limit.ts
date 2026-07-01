@@ -62,18 +62,20 @@ export function rateLimit(limits: Limit[]): RateResult {
 //     is the real flood/quota protection: it bounds total outbound mail no
 //     matter how the per-IP key is spoofed (e.g. rotated X-Forwarded-For), so
 //     the company mailbox and the provider's daily quota (Gmail ~500/day) can't
-//     be exhausted. Tune below your provider's limit; defaults to ~12/hour
-//     sustained (1 token / 5 min) with a burst of 20 → ≤ ~288/day.
-//  2. A strict PER-IP bucket: 1 request per minute per IP per endpoint. NOTE
-//     this trusts the platform-reported client IP; behind a proxy, configure it
-//     to strip/overwrite inbound X-Forwarded-For (see SECURITY.md). The global
-//     bucket is the spoof-proof backstop.
-const GLOBAL_SEND: Limit = { key: "mail:global", capacity: 20, refillMs: 5 * 60_000 };
-const PER_IP_REFILL_MS = 60_000; // 1 per minute per IP
+//     be exhausted. Tune below your provider's limit; defaults to ~20/hour
+//     sustained (1 token / 3 min) with a burst of 30 → ≤ ~480/day (under a
+//     Gmail-free quota, with headroom for a genuine storm-season surge).
+//  2. A PER-IP bucket: 3 requests per 5 minutes per IP per endpoint (a burst of
+//     3, then one slot back every 100 s). NOTE this trusts the platform-reported
+//     client IP; behind a proxy, configure it to strip/overwrite inbound
+//     X-Forwarded-For (see SECURITY.md). The global bucket is the spoof-proof
+//     backstop.
+const GLOBAL_SEND: Limit = { key: "mail:global", capacity: 30, refillMs: 3 * 60_000 };
+const PER_IP: Omit<Limit, "key"> = { capacity: 3, refillMs: 100_000 }; // 3 per 5 min per IP
 
 export function mailRateLimit(scope: string, clientAddress: string): RateResult {
   return rateLimit([
     GLOBAL_SEND,
-    { key: `${scope}:${clientAddress}`, capacity: 1, refillMs: PER_IP_REFILL_MS },
+    { key: `${scope}:${clientAddress}`, capacity: PER_IP.capacity, refillMs: PER_IP.refillMs },
   ]);
 }
